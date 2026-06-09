@@ -36,7 +36,6 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.45;
-  padding-bottom: 88px;
 }
 
 button,
@@ -126,7 +125,7 @@ h3 {
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -172,7 +171,7 @@ h3 {
 .app-main {
   width: min(100%, 1040px);
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.9rem 1rem 1rem;
 }
 
 .tab-panel {
@@ -282,6 +281,7 @@ h3 {
 
 .log-form,
 .compact-form,
+.muscle-map-panel,
 .chart-panel,
 .detail-panel,
 .data-summary {
@@ -299,7 +299,85 @@ h3 {
   gap: 0.9rem;
 }
 
+.muscle-map-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.map-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.muscle-map-layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.muscle-figure {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #0d1112;
+}
+
+.body-part {
+  stroke: #344045;
+  stroke-width: 2;
+}
+
+.body-part.neutral {
+  fill: #20282b;
+}
+
+.body-part.zone {
+  fill: rgba(53, 208, 127, 0.16);
+  stroke: rgba(53, 208, 127, 0.55);
+}
+
+.svg-button {
+  cursor: pointer;
+  outline: none;
+}
+
+.svg-button:hover .body-part.zone,
+.svg-button:focus .body-part.zone,
+.svg-button.active .body-part.zone {
+  fill: rgba(53, 208, 127, 0.76);
+  stroke: var(--accent);
+}
+
+.heart-mark {
+  fill: #101314;
+  pointer-events: none;
+}
+
+.muscle-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.map-chip {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.map-chip.active {
+  border-color: rgba(53, 208, 127, 0.5);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .form-row,
+.step-field,
 .quick-grid label,
 .two-col label,
 .filter-grid label {
@@ -311,10 +389,48 @@ h3 {
 }
 
 .form-row span,
+.step-field span,
 .quick-grid span,
 .two-col span,
 .filter-grid span {
   color: var(--muted);
+}
+
+.flow-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.step-field {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(13, 17, 18, 0.62);
+}
+
+.step-field span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.step-field strong {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #06100b;
+  font-size: 0.78rem;
+}
+
+.optional-head {
+  padding-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .quick-grid,
@@ -326,6 +442,10 @@ h3 {
 }
 
 .quick-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.optional-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -574,7 +694,7 @@ h3 {
   position: fixed;
   left: 1rem;
   right: 1rem;
-  bottom: 98px;
+  bottom: 1rem;
   z-index: 30;
   display: none;
   padding: 0.9rem 1rem;
@@ -590,10 +710,8 @@ h3 {
 }
 
 .tab-bar {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  position: sticky;
+  top: 74px;
   z-index: 15;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -601,11 +719,12 @@ h3 {
   padding: 0.55rem;
   background: rgba(16, 19, 20, 0.96);
   border-top: 1px solid rgba(42, 50, 54, 0.85);
+  border-bottom: 1px solid rgba(42, 50, 54, 0.85);
   backdrop-filter: blur(14px);
 }
 
 .tab-button {
-  min-height: 54px;
+  min-height: 46px;
   padding: 0.45rem 0.25rem;
   background: transparent;
   color: var(--muted);
@@ -619,10 +738,6 @@ h3 {
 }
 
 @media (min-width: 620px) {
-  body {
-    padding-bottom: 0;
-  }
-
   .app-header {
     padding-inline: 1.4rem;
   }
@@ -634,12 +749,9 @@ h3 {
   .tab-bar {
     position: sticky;
     top: 73px;
-    bottom: auto;
     width: min(100%, 1040px);
     margin: 0 auto;
     padding: 0.75rem 1.4rem;
-    border-top: 0;
-    border-bottom: 1px solid rgba(42, 50, 54, 0.85);
   }
 
   .tab-button {
@@ -653,6 +765,19 @@ h3 {
 
   .quick-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .flow-grid {
+    grid-template-columns: 1.1fr 1.5fr 0.8fr 0.8fr 1fr;
+  }
+
+  .muscle-map-layout {
+    grid-template-columns: minmax(260px, 0.9fr) minmax(220px, 1fr);
+    align-items: center;
+  }
+
+  .optional-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .backup-grid {

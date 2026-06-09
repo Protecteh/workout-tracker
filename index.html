@@ -26,6 +26,14 @@
       <button id="installButton" class="ghost-button install-button" hidden>Install</button>
     </header>
 
+    <nav class="tab-bar" aria-label="Primary">
+      <button class="tab-button active" data-tab="today" type="button">Today</button>
+      <button class="tab-button" data-tab="library" type="button">Library</button>
+      <button class="tab-button" data-tab="history" type="button">History</button>
+      <button class="tab-button" data-tab="dashboard" type="button">Dashboard</button>
+      <button class="tab-button" data-tab="settings" type="button">Settings</button>
+    </nav>
+
     <main id="app-main" class="app-main">
       <section id="today" class="tab-panel active" aria-labelledby="todayTitle">
         <div class="section-head">
@@ -33,7 +41,7 @@
             <p class="eyebrow">Today</p>
             <h2 id="todayTitle">Log today's workout</h2>
           </div>
-          <button id="addExerciseToggle" class="primary-button" type="button">Add exercise</button>
+          <button id="addExerciseToggle" class="ghost-button" type="button">Hide quick log</button>
         </div>
 
         <div class="metric-grid today-metrics" aria-label="Today's totals">
@@ -51,25 +59,35 @@
           </article>
         </div>
 
-        <form id="todayForm" class="log-form hidden" autocomplete="off">
-          <div class="form-row full">
-            <label for="exerciseSelect">Exercise</label>
-            <select id="exerciseSelect" required></select>
+        <form id="todayForm" class="log-form" autocomplete="off">
+          <div class="flow-grid">
+            <label class="step-field">
+              <span><strong>1</strong> Target muscle</span>
+              <select id="targetMuscleSelect" required></select>
+            </label>
+            <label class="step-field">
+              <span><strong>2</strong> Exercise</span>
+              <select id="exerciseSelect" required></select>
+            </label>
+            <label class="step-field">
+              <span><strong>3</strong> Sets</span>
+              <select id="setsInput"></select>
+            </label>
+            <label class="step-field">
+              <span><strong>4</strong> Reps</span>
+              <select id="repsInput"></select>
+            </label>
+            <label class="step-field">
+              <span><strong>5</strong> Weight</span>
+              <select id="weightInput"></select>
+            </label>
           </div>
 
-          <div class="quick-grid">
-            <label>
-              <span>Sets</span>
-              <input id="setsInput" inputmode="numeric" type="number" min="0" step="1" placeholder="3">
-            </label>
-            <label>
-              <span>Reps</span>
-              <input id="repsInput" inputmode="numeric" type="number" min="0" step="1" placeholder="10">
-            </label>
-            <label>
-              <span>Weight</span>
-              <input id="weightInput" inputmode="decimal" type="number" min="0" step="0.5" placeholder="kg">
-            </label>
+          <div class="optional-head full">
+            <span>Optional details</span>
+          </div>
+
+          <div class="quick-grid optional-grid">
             <label>
               <span>Duration</span>
               <input id="durationInput" inputmode="decimal" type="number" min="0" step="0.5" placeholder="min">
@@ -129,6 +147,70 @@
             <h2 id="libraryTitle">Built-in and custom exercises</h2>
           </div>
         </div>
+
+        <section class="muscle-map-panel" aria-labelledby="muscleMapTitle">
+          <div class="map-head">
+            <div>
+              <p class="eyebrow">Muscle map</p>
+              <h3 id="muscleMapTitle">Pick a target area</h3>
+            </div>
+            <span id="librarySelectedGroup" class="pill">All groups</span>
+          </div>
+
+          <div class="muscle-map-layout">
+            <svg class="muscle-figure" viewBox="0 0 280 330" role="img" aria-labelledby="muscleMapTitle">
+              <g class="figure-side" aria-label="Front body">
+                <circle class="body-part neutral" cx="80" cy="34" r="20"></circle>
+                <path class="body-part neutral" d="M61 63h38l10 40-16 70H67l-16-70z"></path>
+                <g class="svg-button" data-map-group="Shoulders" role="button" tabindex="0" aria-label="Select Shoulders">
+                  <path class="body-part zone" d="M46 68l15-8 6 30-23 17-12-16z"></path>
+                  <path class="body-part zone" d="M114 68l-15-8-6 30 23 17 12-16z"></path>
+                </g>
+                <g class="svg-button" data-map-group="Chest" role="button" tabindex="0" aria-label="Select Chest">
+                  <path class="body-part zone" d="M62 72h36l5 30-23 13-23-13z"></path>
+                </g>
+                <g class="svg-button" data-map-group="Arms" role="button" tabindex="0" aria-label="Select Arms">
+                  <path class="body-part zone" d="M35 103l22 10-9 73-20-5z"></path>
+                  <path class="body-part zone" d="M125 103l-22 10 9 73 20-5z"></path>
+                </g>
+                <g class="svg-button" data-map-group="Core" role="button" tabindex="0" aria-label="Select Core">
+                  <path class="body-part zone" d="M67 113h26l-2 56H69z"></path>
+                </g>
+                <g class="svg-button" data-map-group="Legs" role="button" tabindex="0" aria-label="Select Legs">
+                  <path class="body-part zone" d="M66 174h24l7 114H72z"></path>
+                  <path class="body-part zone" d="M94 174h24l-6 114H88z"></path>
+                </g>
+              </g>
+
+              <g class="figure-side" aria-label="Back body" transform="translate(120 0)">
+                <circle class="body-part neutral" cx="80" cy="34" r="20"></circle>
+                <path class="body-part neutral" d="M61 63h38l10 40-16 70H67l-16-70z"></path>
+                <g class="svg-button" data-map-group="Back" role="button" tabindex="0" aria-label="Select Back">
+                  <path class="body-part zone" d="M58 73h44l-7 82H65z"></path>
+                </g>
+                <g class="svg-button" data-map-group="Shoulders" role="button" tabindex="0" aria-label="Select Shoulders">
+                  <path class="body-part zone" d="M46 68l15-8 4 31-22 16-12-16z"></path>
+                  <path class="body-part zone" d="M114 68l-15-8-4 31 22 16 12-16z"></path>
+                </g>
+                <g class="svg-button" data-map-group="Arms" role="button" tabindex="0" aria-label="Select Arms">
+                  <path class="body-part zone" d="M35 103l22 10-9 73-20-5z"></path>
+                  <path class="body-part zone" d="M125 103l-22 10 9 73 20-5z"></path>
+                </g>
+                <g class="svg-button" data-map-group="Legs" role="button" tabindex="0" aria-label="Select Legs">
+                  <path class="body-part zone" d="M66 174h24l7 114H72z"></path>
+                  <path class="body-part zone" d="M94 174h24l-6 114H88z"></path>
+                </g>
+              </g>
+
+              <g class="svg-button cardio-zone" data-map-group="Cardio" role="button" tabindex="0" aria-label="Select Cardio">
+                <circle class="body-part zone" cx="248" cy="48" r="20"></circle>
+                <path class="heart-mark" d="M248 58l-11-10c-6-6 2-16 11-8 9-8 17 2 11 8z"></path>
+              </g>
+            </svg>
+
+            <div id="muscleMapChips" class="muscle-chip-grid" aria-label="Muscle groups"></div>
+          </div>
+        </section>
 
         <form id="exerciseForm" class="compact-form" autocomplete="off">
           <input id="customExerciseId" type="hidden">
@@ -282,14 +364,6 @@
         </div>
       </section>
     </main>
-
-    <nav class="tab-bar" aria-label="Primary">
-      <button class="tab-button active" data-tab="today" type="button">Today</button>
-      <button class="tab-button" data-tab="library" type="button">Library</button>
-      <button class="tab-button" data-tab="history" type="button">History</button>
-      <button class="tab-button" data-tab="dashboard" type="button">Dashboard</button>
-      <button class="tab-button" data-tab="settings" type="button">Settings</button>
-    </nav>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </body>

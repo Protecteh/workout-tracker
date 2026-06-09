@@ -39,6 +39,7 @@
   let state = loadState();
   let activeTab = "today";
   let selectedHistoryDate = "";
+  let selectedLibraryGroup = "";
   let deferredInstallPrompt = null;
   let toastTimer = 0;
 
@@ -65,6 +66,7 @@
     els.installButton = document.getElementById("installButton");
     els.addExerciseToggle = document.getElementById("addExerciseToggle");
     els.todayForm = document.getElementById("todayForm");
+    els.targetMuscleSelect = document.getElementById("targetMuscleSelect");
     els.exerciseSelect = document.getElementById("exerciseSelect");
     els.setsInput = document.getElementById("setsInput");
     els.repsInput = document.getElementById("repsInput");
@@ -92,6 +94,8 @@
     els.saveCustomExercise = document.getElementById("saveCustomExercise");
     els.cancelCustomEdit = document.getElementById("cancelCustomEdit");
     els.libraryList = document.getElementById("libraryList");
+    els.librarySelectedGroup = document.getElementById("librarySelectedGroup");
+    els.muscleMapChips = document.getElementById("muscleMapChips");
     els.historyExerciseFilter = document.getElementById("historyExerciseFilter");
     els.historyGroupFilter = document.getElementById("historyGroupFilter");
     els.historyList = document.getElementById("historyList");
@@ -120,6 +124,11 @@
   }
 
   function seedStaticSelects() {
+    fillSelect(els.targetMuscleSelect, MUSCLE_GROUPS.map((group) => ({ value: group, label: group })));
+    fillSelect(els.setsInput, presetOptions("sets", 1, 10, 1, 3));
+    fillSelect(els.repsInput, presetOptions("reps", 1, 50, 1, 10));
+    els.setsInput.value = "3";
+    els.repsInput.value = "10";
     fillSelect(els.customGroup, MUSCLE_GROUPS.map((group) => ({ value: group, label: group })));
     fillSelect(els.customType, EXERCISE_TYPES.map((type) => ({ value: type, label: titleCase(type) })));
     fillSelect(els.historyGroupFilter, [
@@ -136,8 +145,11 @@
 
     els.addExerciseToggle.addEventListener("click", () => {
       els.todayForm.classList.toggle("hidden");
+      els.addExerciseToggle.textContent = els.todayForm.classList.contains("hidden")
+        ? "Show quick log"
+        : "Hide quick log";
       if (!els.todayForm.classList.contains("hidden")) {
-        els.exerciseSelect.focus();
+        els.targetMuscleSelect.focus();
       }
     });
 
@@ -145,6 +157,11 @@
     els.clearTodayForm.addEventListener("click", () => {
       resetLogForm(true);
       showToast("Form cleared.");
+    });
+
+    els.targetMuscleSelect.addEventListener("change", () => {
+      renderExerciseSelects();
+      updatePushupFields();
     });
 
     [els.exerciseSelect, els.emomMinutesInput, els.emomRepsInput].forEach((input) => {
@@ -163,6 +180,31 @@
     els.exerciseForm.addEventListener("submit", handleExerciseSubmit);
     els.cancelCustomEdit.addEventListener("click", resetExerciseForm);
     els.libraryList.addEventListener("click", handleLibraryAction);
+    els.muscleMapChips.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-map-group]");
+      if (!button) {
+        return;
+      }
+      selectLibraryGroup(button.dataset.mapGroup);
+    });
+    document.querySelector(".muscle-figure").addEventListener("click", (event) => {
+      const zone = event.target.closest("[data-map-group]");
+      if (!zone) {
+        return;
+      }
+      selectLibraryGroup(zone.dataset.mapGroup);
+    });
+    document.querySelector(".muscle-figure").addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") {
+        return;
+      }
+      const zone = event.target.closest("[data-map-group]");
+      if (!zone) {
+        return;
+      }
+      event.preventDefault();
+      selectLibraryGroup(zone.dataset.mapGroup);
+    });
 
     els.historyExerciseFilter.addEventListener("change", () => {
       selectedHistoryDate = "";
@@ -321,6 +363,7 @@
     renderDateLabels();
     renderExerciseSelects();
     renderToday();
+    renderMuscleMap();
     renderLibrary();
     renderHistoryFilters();
     renderHistory();
@@ -341,29 +384,27 @@
 
   function renderExerciseSelects() {
     const previousExercise = els.exerciseSelect.value;
+    const selectedGroup = MUSCLE_GROUPS.includes(els.targetMuscleSelect.value)
+      ? els.targetMuscleSelect.value
+      : "Chest";
     const exercises = allExercises();
+    const grouped = exercises.filter((exercise) => exercise.muscleGroup === selectedGroup);
+    els.targetMuscleSelect.value = selectedGroup;
     els.exerciseSelect.innerHTML = "";
 
-    MUSCLE_GROUPS.forEach((group) => {
-      const grouped = exercises.filter((exercise) => exercise.muscleGroup === group);
-      if (!grouped.length) {
-        return;
-      }
-      const optGroup = document.createElement("optgroup");
-      optGroup.label = group;
-      grouped.forEach((exercise) => {
-        const option = document.createElement("option");
-        option.value = exercise.id;
-        option.textContent = `${exercise.name} - ${titleCase(exercise.type)}`;
-        optGroup.append(option);
-      });
-      els.exerciseSelect.append(optGroup);
+    grouped.forEach((exercise) => {
+      const option = document.createElement("option");
+      option.value = exercise.id;
+      option.textContent = `${exercise.name} - ${titleCase(exercise.type)}`;
+      els.exerciseSelect.append(option);
     });
 
-    if (previousExercise && findExercise(previousExercise)) {
+    if (previousExercise && grouped.some((exercise) => exercise.id === previousExercise)) {
       els.exerciseSelect.value = previousExercise;
-    } else if (findExercise("default-pushups")) {
+    } else if (selectedGroup === "Chest" && grouped.some((exercise) => exercise.id === "default-pushups")) {
       els.exerciseSelect.value = "default-pushups";
+    } else if (grouped.length) {
+      els.exerciseSelect.value = grouped[0].id;
     }
     updatePushupFields();
   }
@@ -394,7 +435,8 @@
 
   function renderLibrary() {
     const exercises = allExercises();
-    els.libraryList.innerHTML = MUSCLE_GROUPS.map((group) => {
+    const groupsToShow = selectedLibraryGroup ? [selectedLibraryGroup] : MUSCLE_GROUPS;
+    els.libraryList.innerHTML = groupsToShow.map((group) => {
       const grouped = exercises.filter((exercise) => exercise.muscleGroup === group);
       if (!grouped.length) {
         return "";
@@ -430,6 +472,31 @@
         </section>
       `;
     }).join("");
+  }
+
+  function renderMuscleMap() {
+    const chipGroups = ["", ...MUSCLE_GROUPS];
+    els.librarySelectedGroup.textContent = selectedLibraryGroup || "All groups";
+    els.muscleMapChips.innerHTML = chipGroups.map((group) => {
+      const label = group || "All groups";
+      const active = group === selectedLibraryGroup ? " active" : "";
+      return `<button class="map-chip${active}" type="button" data-map-group="${escapeHtml(group)}">${escapeHtml(label)}</button>`;
+    }).join("");
+
+    document.querySelectorAll(".svg-button[data-map-group]").forEach((zone) => {
+      zone.classList.toggle("active", Boolean(selectedLibraryGroup) && zone.dataset.mapGroup === selectedLibraryGroup);
+    });
+  }
+
+  function selectLibraryGroup(group) {
+    selectedLibraryGroup = MUSCLE_GROUPS.includes(group) ? group : "";
+    if (selectedLibraryGroup) {
+      els.customGroup.value = selectedLibraryGroup;
+    }
+    renderMuscleMap();
+    renderLibrary();
+    showToast(selectedLibraryGroup ? `Showing ${selectedLibraryGroup} exercises.` : "Showing all exercise groups.");
+    els.libraryList.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function renderHistoryFilters() {
@@ -596,8 +663,12 @@
   }
 
   function syncSettingsInputs() {
+    const currentWeight = els.weightInput.value || "0";
     els.weightUnitSelect.value = state.settings.weightUnit;
-    els.weightInput.placeholder = state.settings.weightUnit;
+    fillSelect(els.weightInput, weightOptions(currentWeight));
+    if (Array.from(els.weightInput.options).some((option) => option.value === currentWeight)) {
+      els.weightInput.value = currentWeight;
+    }
     if (!els.bodyweightDateInput.value) {
       els.bodyweightDateInput.value = todayISO();
     }
@@ -862,10 +933,16 @@
 
   function resetLogForm(keepExercise) {
     const selected = els.exerciseSelect.value;
+    const selectedGroup = els.targetMuscleSelect.value;
     els.todayForm.reset();
     if (keepExercise) {
+      els.targetMuscleSelect.value = selectedGroup;
+      renderExerciseSelects();
       els.exerciseSelect.value = selected;
     }
+    els.setsInput.value = "3";
+    els.repsInput.value = "10";
+    els.weightInput.value = "0";
     updatePushupFields();
   }
 
@@ -1214,6 +1291,33 @@
       option.textContent = item.label;
       select.append(option);
     });
+  }
+
+  function presetOptions(label, start, end, step, defaultValue) {
+    const options = [];
+    for (let value = start; value <= end; value += step) {
+      const optionLabel = value === 1 && label.endsWith("s") ? label.slice(0, -1) : label;
+      options.push({
+        value: String(value),
+        label: `${formatNumber(value)} ${optionLabel}`,
+        selected: value === defaultValue
+      });
+    }
+    return options;
+  }
+
+  function weightOptions(currentValue) {
+    const unit = state.settings.weightUnit;
+    const max = unit === "lb" ? 400 : 200;
+    const step = unit === "lb" ? 5 : 2.5;
+    const options = [{ value: "0", label: `Bodyweight / 0 ${unit}` }];
+    for (let value = step; value <= max; value += step) {
+      options.push({ value: String(value), label: `${formatNumber(value)} ${unit}` });
+    }
+    if (currentValue && Number(currentValue) > 0 && !options.some((option) => option.value === currentValue)) {
+      options.push({ value: currentValue, label: `${formatNumber(currentValue)} ${unit}` });
+    }
+    return options;
   }
 
   function uid(prefix) {

@@ -139,6 +139,11 @@
     els.selectedDateLogTitle = document.getElementById("selectedDateLogTitle");
     els.todayEntryCount = document.getElementById("todayEntryCount");
     els.todayEntries = document.getElementById("todayEntries");
+    els.restDayPanel = document.getElementById("restDayPanel");
+    els.restDayTitle = document.getElementById("restDayTitle");
+    els.restDayText = document.getElementById("restDayText");
+    els.markRestDayButton = document.getElementById("markRestDayButton");
+    els.clearRestDayButton = document.getElementById("clearRestDayButton");
     els.exerciseForm = document.getElementById("exerciseForm");
     els.customExerciseId = document.getElementById("customExerciseId");
     els.customName = document.getElementById("customName");
@@ -209,6 +214,8 @@
 
     els.todayForm.addEventListener("submit", handleTodaySubmit);
     els.workoutDateInput.addEventListener("change", renderToday);
+    els.markRestDayButton.addEventListener("click", markSelectedDateRestDay);
+    els.clearRestDayButton.addEventListener("click", clearSelectedDateRestDay);
     els.clearTodayForm.addEventListener("click", () => {
       resetLogForm(true);
       showToast("Form cleared.");
@@ -305,6 +312,7 @@
     const settings = source.settings && typeof source.settings === "object" ? source.settings : {};
     return {
       workouts: normalizeWorkouts(source.workouts),
+      restDays: normalizeRestDays(source.restDays),
       customExercises: Array.isArray(source.customExercises)
         ? source.customExercises.map(normalizeExercise).filter(Boolean)
         : [],
@@ -335,6 +343,38 @@
       normalized[date] = {
         date,
         entries: entries.map(normalizeEntry).filter(Boolean)
+      };
+    });
+
+    return normalized;
+  }
+
+  function normalizeRestDays(restDays) {
+    const normalized = {};
+    if (!restDays || typeof restDays !== "object") {
+      return normalized;
+    }
+
+    if (Array.isArray(restDays)) {
+      restDays.forEach((item) => {
+        const date = typeof item === "string" ? item : item && item.date;
+        if (isISODate(date)) {
+          normalized[date] = {
+            date,
+            createdAt: String((item && item.createdAt) || new Date().toISOString())
+          };
+        }
+      });
+      return normalized;
+    }
+
+    Object.entries(restDays).forEach(([date, value]) => {
+      if (!isISODate(date)) {
+        return;
+      }
+      normalized[date] = {
+        date,
+        createdAt: String((value && value.createdAt) || new Date().toISOString())
       };
     });
 
@@ -452,6 +492,7 @@
   function renderToday() {
     const date = selectedWorkoutDate();
     const entries = entriesForDate(date);
+    const restDay = isRestDay(date);
     const totals = entries.reduce(
       (acc, entry) => {
         acc.sets += entryTotalSets(entry);
@@ -466,14 +507,32 @@
     els.todayTotalReps.textContent = formatNumber(totals.reps);
     els.todayTotalPushups.textContent = formatNumber(totals.pushups);
     els.selectedDateLogTitle.textContent = date === todayISO() ? "Today's log" : `${formatLongDate(date)} log`;
-    els.todayEntryCount.textContent = `${entries.length} ${entries.length === 1 ? "exercise" : "exercises"}`;
+    els.todayEntryCount.textContent = restDay && !entries.length
+      ? "Rest day"
+      : `${entries.length} ${entries.length === 1 ? "exercise" : "exercises"}`;
+    renderRestDayPanel(date, restDay, entries.length);
 
-    els.todayEntries.innerHTML = entries
-      .slice()
-      .reverse()
-      .map((entry) => renderEntryCard(entry, date, true))
-      .join("");
+    els.todayEntries.innerHTML = restDay && !entries.length
+      ? renderRestDayCard(date)
+      : entries
+        .slice()
+        .reverse()
+        .map((entry) => renderEntryCard(entry, date, true))
+        .join("");
     renderDateLabels();
+  }
+
+  function renderRestDayPanel(date, restDay, entryCount) {
+    els.restDayPanel.classList.toggle("active", restDay);
+    els.markRestDayButton.classList.toggle("hidden", restDay);
+    els.clearRestDayButton.classList.toggle("hidden", !restDay);
+    els.restDayTitle.textContent = restDay ? "Rest day marked" : "No workout for this date?";
+    els.restDayText.textContent = restDay
+      ? `${formatLongDate(date)} is saved as a rest day.`
+      : entryCount
+        ? "This date already has a workout logged. Delete the entries first if it was actually a rest day."
+        : "Mark the selected date as a rest day when you did not train.";
+    els.markRestDayButton.disabled = entryCount > 0;
   }
 
   function renderLibrary() {
@@ -566,7 +625,7 @@
     }
 
     els.historyList.innerHTML = filtered
-      .map(({ date, entries }) => {
+      .map(({ date, entries, restDay }) => {
         const totalReps = entries.reduce((sum, entry) => sum + entryTotalReps(entry), 0);
         const groups = Array.from(new Set(entries.map((entry) => entry.muscleGroup))).join(", ");
         const active = selectedHistoryDate === date ? " active" : "";
@@ -574,23 +633,38 @@
         return `
           <button class="history-card${active}" type="button" data-history-date="${escapeHtml(date)}">
             <div class="history-title">${escapeHtml(formatLongDate(date))}</div>
-            <div class="history-meta">${exerciseCount} | ${formatNumber(totalReps)} reps | ${escapeHtml(groups || "No group")}</div>
+            <div class="history-meta">${restDay ? "Rest day | No workout" : `${exerciseCount} | ${formatNumber(totalReps)} reps | ${escapeHtml(groups || "No group")}`}</div>
           </button>
         `;
       })
       .join("");
 
-    if (!selectedHistoryDate || !state.workouts[selectedHistoryDate]) {
+    const selectedItem = filtered.find((item) => item.date === selectedHistoryDate);
+    if (!selectedItem) {
       els.historyDetail.classList.add("hidden");
       els.historyDetail.innerHTML = "";
       return;
     }
 
-    renderHistoryDetail(selectedHistoryDate);
+    renderHistoryDetail(selectedItem.date, selectedItem.restDay);
   }
 
-  function renderHistoryDetail(date) {
-    const entries = state.workouts[date].entries;
+  function renderHistoryDetail(date, restDay = false) {
+    const entries = entriesForDate(date);
+    if (restDay && !entries.length) {
+      els.historyDetail.classList.remove("hidden");
+      els.historyDetail.innerHTML = `
+        <div class="subhead no-margin">
+          <div>
+            <h3>${escapeHtml(formatLongDate(date))}</h3>
+            <p class="muted">Rest day | No workout</p>
+          </div>
+        </div>
+        ${renderRestDayCard(date)}
+      `;
+      return;
+    }
+
     const totalSets = entries.reduce((sum, entry) => sum + entryTotalSets(entry), 0);
     const totalReps = entries.reduce((sum, entry) => sum + entryTotalReps(entry), 0);
 
@@ -699,7 +773,8 @@
   function renderDataSummary() {
     const entryCount = Object.values(state.workouts).reduce((sum, workout) => sum + workout.entries.length, 0);
     const dayCount = workoutDates().length;
-    els.dataSummaryText.textContent = `${plural(dayCount, "training day")}, ${plural(entryCount, "logged exercise")}, ${plural(state.customExercises.length, "custom exercise")}, ${plural(state.bodyweights.length, "bodyweight entry", "bodyweight entries")}.`;
+    const restCount = restDayDates().length;
+    els.dataSummaryText.textContent = `${plural(dayCount, "training day")}, ${plural(restCount, "rest day")}, ${plural(entryCount, "logged exercise")}, ${plural(state.customExercises.length, "custom exercise")}, ${plural(state.bodyweights.length, "bodyweight entry", "bodyweight entries")}.`;
   }
 
   function syncSettingsInputs() {
@@ -746,6 +821,7 @@
     }
 
     const date = selectedWorkoutDate();
+    clearRestDay(date);
     ensureWorkout(date).entries.push(entry);
     persist();
     resetLogForm(true);
@@ -871,6 +947,27 @@
     showToast("Workout entry deleted.");
   }
 
+  function markSelectedDateRestDay() {
+    const date = selectedWorkoutDate();
+    if (entriesForDate(date).length) {
+      showToast("Delete logged exercises before marking this as a rest day.");
+      return;
+    }
+
+    state.restDays[date] = { date, createdAt: new Date().toISOString() };
+    persist();
+    renderAll();
+    showToast(`${formatLongDate(date)} marked as a rest day.`);
+  }
+
+  function clearSelectedDateRestDay() {
+    const date = selectedWorkoutDate();
+    clearRestDay(date);
+    persist();
+    renderAll();
+    showToast(`Rest day cleared for ${formatLongDate(date)}.`);
+  }
+
   function exportJsonBackup() {
     const payload = {
       schemaVersion: 1,
@@ -931,8 +1028,14 @@
       "total_reps"
     ];
 
-    const rows = workoutDates().flatMap((date) => {
+    const rows = historyDates().flatMap((date) => {
       const workout = state.workouts[date];
+      if ((!workout || !workout.entries.length) && isRestDay(date)) {
+        return [[date, "Rest day", "", "rest", "", "", "", "", "", "No workout", "", "", "", ""]];
+      }
+      if (!workout) {
+        return [];
+      }
       return workout.entries.map((entry) => [
         date,
         entry.exerciseName,
@@ -1011,16 +1114,22 @@
     const selectedExercise = els.historyExerciseFilter.value;
     const selectedGroup = els.historyGroupFilter.value;
 
-    return workoutDates()
+    return historyDates()
       .map((date) => {
-        const entries = state.workouts[date].entries.filter((entry) => {
+        const workout = state.workouts[date];
+        const allEntries = workout ? workout.entries : [];
+        const entries = allEntries.filter((entry) => {
           const exerciseMatch = !selectedExercise || entry.exerciseName === selectedExercise;
           const groupMatch = !selectedGroup || entry.muscleGroup === selectedGroup;
           return exerciseMatch && groupMatch;
         });
-        return { date, entries };
+        const restDay = isRestDay(date) && !allEntries.length;
+        if (restDay && !selectedExercise && !selectedGroup) {
+          return { date, entries: [], restDay: true };
+        }
+        return entries.length ? { date, entries, restDay: false } : null;
       })
-      .filter((item) => item.entries.length)
+      .filter(Boolean)
       .sort((a, b) => b.date.localeCompare(a.date));
   }
 
@@ -1098,9 +1207,34 @@
     return isISODate(els.workoutDateInput.value) ? els.workoutDateInput.value : todayISO();
   }
 
+  function renderRestDayCard(date) {
+    return `
+      <article class="item-card rest-card">
+        <div class="item-top">
+          <div>
+            <div class="item-title">Rest day</div>
+            <div class="item-meta">${escapeHtml(formatLongDate(date))}</div>
+          </div>
+          <span class="pill accent">No workout</span>
+        </div>
+        <p class="item-meta">Saved as a day off from training.</p>
+      </article>
+    `;
+  }
+
   function entriesForDate(date) {
     const workout = state.workouts[date];
     return workout ? workout.entries : [];
+  }
+
+  function isRestDay(date) {
+    return Boolean(state.restDays[date]);
+  }
+
+  function clearRestDay(date) {
+    if (state.restDays[date]) {
+      delete state.restDays[date];
+    }
   }
 
   function ensureWorkout(date) {
@@ -1114,6 +1248,14 @@
     return Object.keys(state.workouts)
       .filter((date) => state.workouts[date] && state.workouts[date].entries && state.workouts[date].entries.length)
       .sort((a, b) => a.localeCompare(b));
+  }
+
+  function restDayDates() {
+    return Object.keys(state.restDays).filter(isISODate).sort((a, b) => a.localeCompare(b));
+  }
+
+  function historyDates() {
+    return Array.from(new Set([...workoutDates(), ...restDayDates()])).sort((a, b) => a.localeCompare(b));
   }
 
   function entryTotalSets(entry) {

@@ -282,6 +282,7 @@ h3 {
 .log-form,
 .compact-form,
 .muscle-picker-panel,
+.rest-day-panel,
 .chart-panel,
 .detail-panel,
 .data-summary {
@@ -297,6 +298,21 @@ h3 {
 .compact-form {
   display: grid;
   gap: 0.9rem;
+}
+
+.rest-day-panel {
+  display: grid;
+  gap: 0.85rem;
+  box-shadow: none;
+}
+
+.rest-day-panel.active {
+  border-color: rgba(53, 208, 127, 0.42);
+  background: var(--accent-soft);
+}
+
+.rest-day-actions {
+  margin-top: 0;
 }
 
 .muscle-picker-panel {
@@ -467,6 +483,12 @@ h3 {
 }
 
 .tag.accent {
+  border-color: rgba(53, 208, 127, 0.32);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pill.accent {
   border-color: rgba(53, 208, 127, 0.32);
   background: var(--accent-soft);
   color: var(--accent);

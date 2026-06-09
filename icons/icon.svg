@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Workout Tracker icon">
+  <rect width="512" height="512" rx="96" fill="#101314"/>
+  <rect x="76" y="306" width="364" height="54" rx="27" fill="#35d07f"/>
+  <rect x="108" y="236" width="54" height="194" rx="27" fill="#6cb8ff"/>
+  <rect x="350" y="236" width="54" height="194" rx="27" fill="#6cb8ff"/>
+  <path d="M151 189c39-48 89-72 149-72 41 0 79 12 114 36" fill="none" stroke="#edf3f2" stroke-width="38" stroke-linecap="round"/>
+  <path d="M154 191l42 8-8-42" fill="none" stroke="#edf3f2" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="256" y="294" fill="#edf3f2" font-family="Arial, sans-serif" font-size="94" font-weight="800" text-anchor="middle">WT</text>
+</svg>

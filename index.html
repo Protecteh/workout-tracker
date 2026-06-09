@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101314">
+    <meta name="description" content="A local-first personal workout tracker with exercise library, daily logging, history, dashboard, and backups.">
+    <title>Workout Tracker</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#app-main">Skip to content</a>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">WT</div>
+        <div>
+          <h1>Workout Tracker</h1>
+          <p id="currentDateLabel">Ready when you are.</p>
+        </div>
+      </div>
+      <button id="installButton" class="ghost-button install-button" hidden>Install</button>
+    </header>
+
+    <main id="app-main" class="app-main">
+      <section id="today" class="tab-panel active" aria-labelledby="todayTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Today</p>
+            <h2 id="todayTitle">Log today's workout</h2>
+          </div>
+          <button id="addExerciseToggle" class="primary-button" type="button">Add exercise</button>
+        </div>
+
+        <div class="metric-grid today-metrics" aria-label="Today's totals">
+          <article class="metric">
+            <span>Total sets</span>
+            <strong id="todayTotalSets">0</strong>
+          </article>
+          <article class="metric">
+            <span>Total reps</span>
+            <strong id="todayTotalReps">0</strong>
+          </article>
+          <article class="metric">
+            <span>Total pushups</span>
+            <strong id="todayTotalPushups">0</strong>
+          </article>
+        </div>
+
+        <form id="todayForm" class="log-form hidden" autocomplete="off">
+          <div class="form-row full">
+            <label for="exerciseSelect">Exercise</label>
+            <select id="exerciseSelect" required></select>
+          </div>
+
+          <div class="quick-grid">
+            <label>
+              <span>Sets</span>
+              <input id="setsInput" inputmode="numeric" type="number" min="0" step="1" placeholder="3">
+            </label>
+            <label>
+              <span>Reps</span>
+              <input id="repsInput" inputmode="numeric" type="number" min="0" step="1" placeholder="10">
+            </label>
+            <label>
+              <span>Weight</span>
+              <input id="weightInput" inputmode="decimal" type="number" min="0" step="0.5" placeholder="kg">
+            </label>
+            <label>
+              <span>Duration</span>
+              <input id="durationInput" inputmode="decimal" type="number" min="0" step="0.5" placeholder="min">
+            </label>
+            <label>
+              <span>Distance</span>
+              <input id="distanceInput" inputmode="decimal" type="number" min="0" step="0.01" placeholder="km">
+            </label>
+          </div>
+
+          <div id="pushupFields" class="special-panel hidden">
+            <div class="special-head">
+              <div>
+                <p class="eyebrow">Pushup tracking</p>
+                <h3>Max set and EMOM</h3>
+              </div>
+              <span id="emomTotalBadge" class="pill">0 total</span>
+            </div>
+            <div class="quick-grid">
+              <label>
+                <span>Max in one set</span>
+                <input id="pushupMaxInput" inputmode="numeric" type="number" min="0" step="1" placeholder="42">
+              </label>
+              <label>
+                <span>EMOM minutes</span>
+                <input id="emomMinutesInput" inputmode="numeric" type="number" min="0" step="1" placeholder="10">
+              </label>
+              <label>
+                <span>Reps / minute</span>
+                <input id="emomRepsInput" inputmode="numeric" type="number" min="0" step="1" placeholder="8">
+              </label>
+            </div>
+          </div>
+
+          <label class="form-row full">
+            <span>Notes</span>
+            <textarea id="notesInput" rows="3" placeholder="Optional notes"></textarea>
+          </label>
+
+          <div class="button-row">
+            <button class="primary-button" type="submit">Save workout</button>
+            <button id="clearTodayForm" class="ghost-button" type="button">Clear</button>
+          </div>
+        </form>
+
+        <div class="subhead">
+          <h3>Today's log</h3>
+          <span id="todayEntryCount" class="muted">0 exercises</span>
+        </div>
+        <div id="todayEntries" class="item-list empty-list"></div>
+      </section>
+
+      <section id="library" class="tab-panel" aria-labelledby="libraryTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Exercise Library</p>
+            <h2 id="libraryTitle">Built-in and custom exercises</h2>
+          </div>
+        </div>
+
+        <form id="exerciseForm" class="compact-form" autocomplete="off">
+          <input id="customExerciseId" type="hidden">
+          <label class="form-row full">
+            <span>Exercise name</span>
+            <input id="customName" type="text" placeholder="Add a custom exercise" required>
+          </label>
+          <div class="two-col">
+            <label>
+              <span>Muscle group</span>
+              <select id="customGroup" required></select>
+            </label>
+            <label>
+              <span>Type</span>
+              <select id="customType" required></select>
+            </label>
+          </div>
+          <div class="button-row">
+            <button id="saveCustomExercise" class="primary-button" type="submit">Add custom</button>
+            <button id="cancelCustomEdit" class="ghost-button hidden" type="button">Cancel edit</button>
+          </div>
+        </form>
+
+        <div id="libraryList" class="library-list"></div>
+      </section>
+
+      <section id="history" class="tab-panel" aria-labelledby="historyTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Workout History</p>
+            <h2 id="historyTitle">Calendar and log</h2>
+          </div>
+        </div>
+
+        <div class="filter-grid">
+          <label>
+            <span>Exercise</span>
+            <select id="historyExerciseFilter"></select>
+          </label>
+          <label>
+            <span>Muscle group</span>
+            <select id="historyGroupFilter"></select>
+          </label>
+        </div>
+
+        <div id="historyList" class="history-list empty-list"></div>
+        <div id="historyDetail" class="detail-panel hidden"></div>
+      </section>
+
+      <section id="dashboard" class="tab-panel" aria-labelledby="dashboardTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Dashboard</p>
+            <h2 id="dashboardTitle">Progress at a glance</h2>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <article class="metric">
+            <span>Training days this month</span>
+            <strong id="monthTrainingDays">0</strong>
+          </article>
+          <article class="metric">
+            <span>Workouts this week</span>
+            <strong id="weekWorkoutDays">0</strong>
+          </article>
+          <article class="metric">
+            <span>Best pushup max</span>
+            <strong id="bestPushupMax">0</strong>
+          </article>
+          <article class="metric">
+            <span>Toward 100 pushups</span>
+            <strong id="pushupGoalText">0%</strong>
+          </article>
+        </div>
+
+        <article class="chart-panel">
+          <div class="chart-head">
+            <h3>Pushup progress</h3>
+            <span class="muted">Best set per day</span>
+          </div>
+          <canvas id="pushupChart" height="190" aria-label="Pushup progress chart"></canvas>
+        </article>
+
+        <article class="chart-panel">
+          <div class="chart-head">
+            <h3>Bodyweight progress</h3>
+            <span id="bodyweightUnitLabel" class="muted">kg</span>
+          </div>
+          <canvas id="bodyweightChart" height="190" aria-label="Bodyweight progress chart"></canvas>
+        </article>
+
+        <article class="chart-panel">
+          <div class="chart-head">
+            <h3>Most trained muscle groups</h3>
+            <span class="muted">By logged exercises</span>
+          </div>
+          <div id="muscleGroupBars" class="bar-list"></div>
+        </article>
+      </section>
+
+      <section id="settings" class="tab-panel" aria-labelledby="settingsTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Settings and Backup</p>
+            <h2 id="settingsTitle">Keep your data portable</h2>
+          </div>
+        </div>
+
+        <form id="settingsForm" class="compact-form">
+          <label class="form-row full">
+            <span>Weight unit</span>
+            <select id="weightUnitSelect">
+              <option value="kg">kg</option>
+              <option value="lb">lb</option>
+            </select>
+          </label>
+        </form>
+
+        <form id="bodyweightForm" class="compact-form" autocomplete="off">
+          <div class="subhead no-margin">
+            <h3>Bodyweight log</h3>
+            <span class="muted">Used in dashboard chart</span>
+          </div>
+          <div class="two-col">
+            <label>
+              <span>Date</span>
+              <input id="bodyweightDateInput" type="date" required>
+            </label>
+            <label>
+              <span>Bodyweight</span>
+              <input id="bodyweightValueInput" inputmode="decimal" type="number" min="0" step="0.1" required>
+            </label>
+          </div>
+          <button class="primary-button" type="submit">Save bodyweight</button>
+          <div id="bodyweightList" class="small-list"></div>
+        </form>
+
+        <div class="backup-grid">
+          <button id="exportJsonButton" class="primary-button" type="button">Export JSON backup</button>
+          <label class="file-button">
+            <input id="importFileInput" type="file" accept="application/json">
+            Import JSON backup
+          </label>
+          <button id="exportCsvButton" class="ghost-button" type="button">Export history CSV</button>
+        </div>
+
+        <div class="data-summary">
+          <h3>Data on this device</h3>
+          <p id="dataSummaryText" class="muted"></p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tab-bar" aria-label="Primary">
+      <button class="tab-button active" data-tab="today" type="button">Today</button>
+      <button class="tab-button" data-tab="library" type="button">Library</button>
+      <button class="tab-button" data-tab="history" type="button">History</button>
+      <button class="tab-button" data-tab="dashboard" type="button">Dashboard</button>
+      <button class="tab-button" data-tab="settings" type="button">Settings</button>
+    </nav>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

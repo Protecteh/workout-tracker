@@ -148,68 +148,16 @@
           </div>
         </div>
 
-        <section class="muscle-map-panel" aria-labelledby="muscleMapTitle">
+        <section class="muscle-picker-panel" aria-labelledby="musclePickerTitle">
           <div class="map-head">
             <div>
-              <p class="eyebrow">Muscle map</p>
-              <h3 id="muscleMapTitle">Pick a target area</h3>
+              <p class="eyebrow">Target muscle</p>
+              <h3 id="musclePickerTitle">Pick a group to show exercises</h3>
             </div>
             <span id="librarySelectedGroup" class="pill">All groups</span>
           </div>
 
-          <div class="muscle-map-layout">
-            <svg class="muscle-figure" viewBox="0 0 280 330" role="img" aria-labelledby="muscleMapTitle">
-              <g class="figure-side" aria-label="Front body">
-                <circle class="body-part neutral" cx="80" cy="34" r="20"></circle>
-                <path class="body-part neutral" d="M61 63h38l10 40-16 70H67l-16-70z"></path>
-                <g class="svg-button" data-map-group="Shoulders" role="button" tabindex="0" aria-label="Select Shoulders">
-                  <path class="body-part zone" d="M46 68l15-8 6 30-23 17-12-16z"></path>
-                  <path class="body-part zone" d="M114 68l-15-8-6 30 23 17 12-16z"></path>
-                </g>
-                <g class="svg-button" data-map-group="Chest" role="button" tabindex="0" aria-label="Select Chest">
-                  <path class="body-part zone" d="M62 72h36l5 30-23 13-23-13z"></path>
-                </g>
-                <g class="svg-button" data-map-group="Arms" role="button" tabindex="0" aria-label="Select Arms">
-                  <path class="body-part zone" d="M35 103l22 10-9 73-20-5z"></path>
-                  <path class="body-part zone" d="M125 103l-22 10 9 73 20-5z"></path>
-                </g>
-                <g class="svg-button" data-map-group="Core" role="button" tabindex="0" aria-label="Select Core">
-                  <path class="body-part zone" d="M67 113h26l-2 56H69z"></path>
-                </g>
-                <g class="svg-button" data-map-group="Legs" role="button" tabindex="0" aria-label="Select Legs">
-                  <path class="body-part zone" d="M66 174h24l7 114H72z"></path>
-                  <path class="body-part zone" d="M94 174h24l-6 114H88z"></path>
-                </g>
-              </g>
-
-              <g class="figure-side" aria-label="Back body" transform="translate(120 0)">
-                <circle class="body-part neutral" cx="80" cy="34" r="20"></circle>
-                <path class="body-part neutral" d="M61 63h38l10 40-16 70H67l-16-70z"></path>
-                <g class="svg-button" data-map-group="Back" role="button" tabindex="0" aria-label="Select Back">
-                  <path class="body-part zone" d="M58 73h44l-7 82H65z"></path>
-                </g>
-                <g class="svg-button" data-map-group="Shoulders" role="button" tabindex="0" aria-label="Select Shoulders">
-                  <path class="body-part zone" d="M46 68l15-8 4 31-22 16-12-16z"></path>
-                  <path class="body-part zone" d="M114 68l-15-8-4 31 22 16 12-16z"></path>
-                </g>
-                <g class="svg-button" data-map-group="Arms" role="button" tabindex="0" aria-label="Select Arms">
-                  <path class="body-part zone" d="M35 103l22 10-9 73-20-5z"></path>
-                  <path class="body-part zone" d="M125 103l-22 10 9 73 20-5z"></path>
-                </g>
-                <g class="svg-button" data-map-group="Legs" role="button" tabindex="0" aria-label="Select Legs">
-                  <path class="body-part zone" d="M66 174h24l7 114H72z"></path>
-                  <path class="body-part zone" d="M94 174h24l-6 114H88z"></path>
-                </g>
-              </g>
-
-              <g class="svg-button cardio-zone" data-map-group="Cardio" role="button" tabindex="0" aria-label="Select Cardio">
-                <circle class="body-part zone" cx="248" cy="48" r="20"></circle>
-                <path class="heart-mark" d="M248 58l-11-10c-6-6 2-16 11-8 9-8 17 2 11 8z"></path>
-              </g>
-            </svg>
-
-            <div id="muscleMapChips" class="muscle-chip-grid" aria-label="Muscle groups"></div>
-          </div>
+          <div id="muscleMapChips" class="muscle-chip-grid" aria-label="Muscle groups"></div>
         </section>
 
         <form id="exerciseForm" class="compact-form" autocomplete="off">

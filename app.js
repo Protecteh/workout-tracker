@@ -13,26 +13,77 @@
     { id: "default-incline-press", name: "Incline press", muscleGroup: "Chest", type: "strength" },
     { id: "default-dips", name: "Dips", muscleGroup: "Chest", type: "bodyweight" },
     { id: "default-cable-fly", name: "Cable fly", muscleGroup: "Chest", type: "strength" },
+    { id: "default-dumbbell-bench-press", name: "Dumbbell bench press", muscleGroup: "Chest", type: "strength" },
+    { id: "default-chest-press-machine", name: "Chest press machine", muscleGroup: "Chest", type: "strength" },
+    { id: "default-pec-deck-fly", name: "Pec deck fly", muscleGroup: "Chest", type: "strength" },
+    { id: "default-decline-press", name: "Decline press", muscleGroup: "Chest", type: "strength" },
+    { id: "default-dumbbell-fly", name: "Dumbbell fly", muscleGroup: "Chest", type: "strength" },
+
     { id: "default-pullups", name: "Pullups", muscleGroup: "Back", type: "bodyweight" },
     { id: "default-chinups", name: "Chinups", muscleGroup: "Back", type: "bodyweight" },
     { id: "default-rows", name: "Rows", muscleGroup: "Back", type: "strength" },
     { id: "default-lat-pulldown", name: "Lat pulldown", muscleGroup: "Back", type: "strength" },
+    { id: "default-seated-cable-row", name: "Seated cable row", muscleGroup: "Back", type: "strength" },
+    { id: "default-barbell-row", name: "Barbell row", muscleGroup: "Back", type: "strength" },
+    { id: "default-dumbbell-row", name: "Dumbbell row", muscleGroup: "Back", type: "strength" },
+    { id: "default-deadlift", name: "Deadlift", muscleGroup: "Back", type: "strength" },
+    { id: "default-face-pull", name: "Face pull", muscleGroup: "Back", type: "strength" },
+    { id: "default-straight-arm-pulldown", name: "Straight-arm pulldown", muscleGroup: "Back", type: "strength" },
+
     { id: "default-overhead-press", name: "Overhead press", muscleGroup: "Shoulders", type: "strength" },
     { id: "default-lateral-raises", name: "Lateral raises", muscleGroup: "Shoulders", type: "strength" },
     { id: "default-rear-delt-fly", name: "Rear delt fly", muscleGroup: "Shoulders", type: "strength" },
+    { id: "default-dumbbell-shoulder-press", name: "Dumbbell shoulder press", muscleGroup: "Shoulders", type: "strength" },
+    { id: "default-shoulder-press-machine", name: "Shoulder press machine", muscleGroup: "Shoulders", type: "strength" },
+    { id: "default-front-raises", name: "Front raises", muscleGroup: "Shoulders", type: "strength" },
+    { id: "default-arnold-press", name: "Arnold press", muscleGroup: "Shoulders", type: "strength" },
+    { id: "default-upright-row", name: "Upright row", muscleGroup: "Shoulders", type: "strength" },
+    { id: "default-cable-lateral-raise", name: "Cable lateral raise", muscleGroup: "Shoulders", type: "strength" },
+    { id: "default-shrugs", name: "Shrugs", muscleGroup: "Shoulders", type: "strength" },
+
     { id: "default-curls", name: "Curls", muscleGroup: "Arms", type: "strength" },
     { id: "default-triceps-pushdown", name: "Triceps pushdown", muscleGroup: "Arms", type: "strength" },
     { id: "default-skull-crushers", name: "Skull crushers", muscleGroup: "Arms", type: "strength" },
+    { id: "default-hammer-curls", name: "Hammer curls", muscleGroup: "Arms", type: "strength" },
+    { id: "default-preacher-curls", name: "Preacher curls", muscleGroup: "Arms", type: "strength" },
+    { id: "default-cable-curls", name: "Cable curls", muscleGroup: "Arms", type: "strength" },
+    { id: "default-triceps-dips", name: "Triceps dips", muscleGroup: "Arms", type: "bodyweight" },
+    { id: "default-overhead-triceps-extension", name: "Overhead triceps extension", muscleGroup: "Arms", type: "strength" },
+    { id: "default-close-grip-bench-press", name: "Close-grip bench press", muscleGroup: "Arms", type: "strength" },
+    { id: "default-concentration-curls", name: "Concentration curls", muscleGroup: "Arms", type: "strength" },
+
     { id: "default-squats", name: "Squats", muscleGroup: "Legs", type: "strength" },
     { id: "default-leg-press", name: "Leg press", muscleGroup: "Legs", type: "strength" },
     { id: "default-lunges", name: "Lunges", muscleGroup: "Legs", type: "bodyweight" },
     { id: "default-calf-raises", name: "Calf raises", muscleGroup: "Legs", type: "strength" },
+    { id: "default-romanian-deadlift", name: "Romanian deadlift", muscleGroup: "Legs", type: "strength" },
+    { id: "default-leg-extension", name: "Leg extension", muscleGroup: "Legs", type: "strength" },
+    { id: "default-leg-curl", name: "Leg curl", muscleGroup: "Legs", type: "strength" },
+    { id: "default-hip-thrust", name: "Hip thrust", muscleGroup: "Legs", type: "strength" },
+    { id: "default-bulgarian-split-squat", name: "Bulgarian split squat", muscleGroup: "Legs", type: "strength" },
+    { id: "default-goblet-squat", name: "Goblet squat", muscleGroup: "Legs", type: "strength" },
+    { id: "default-step-ups", name: "Step-ups", muscleGroup: "Legs", type: "bodyweight" },
+
     { id: "default-plank", name: "Plank", muscleGroup: "Core", type: "bodyweight" },
     { id: "default-hanging-leg-raises", name: "Hanging leg raises", muscleGroup: "Core", type: "bodyweight" },
     { id: "default-crunches", name: "Crunches", muscleGroup: "Core", type: "bodyweight" },
+    { id: "default-sit-ups", name: "Sit-ups", muscleGroup: "Core", type: "bodyweight" },
+    { id: "default-russian-twists", name: "Russian twists", muscleGroup: "Core", type: "bodyweight" },
+    { id: "default-bicycle-crunches", name: "Bicycle crunches", muscleGroup: "Core", type: "bodyweight" },
+    { id: "default-cable-crunch", name: "Cable crunch", muscleGroup: "Core", type: "strength" },
+    { id: "default-ab-wheel-rollout", name: "Ab wheel rollout", muscleGroup: "Core", type: "bodyweight" },
+    { id: "default-mountain-climbers", name: "Mountain climbers", muscleGroup: "Core", type: "bodyweight" },
+    { id: "default-dead-bug", name: "Dead bug", muscleGroup: "Core", type: "bodyweight" },
+
     { id: "default-walking", name: "Walking", muscleGroup: "Cardio", type: "cardio" },
     { id: "default-running", name: "Running", muscleGroup: "Cardio", type: "cardio" },
-    { id: "default-cycling", name: "Cycling", muscleGroup: "Cardio", type: "cardio" }
+    { id: "default-cycling", name: "Cycling", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-elliptical", name: "Elliptical", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-rowing-machine", name: "Rowing machine", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-stair-climber", name: "Stair climber", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-jump-rope", name: "Jump rope", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-swimming", name: "Swimming", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-hiking", name: "Hiking", muscleGroup: "Cardio", type: "cardio" }
   ];
 
   const els = {};
@@ -186,24 +237,6 @@
         return;
       }
       selectLibraryGroup(button.dataset.mapGroup);
-    });
-    document.querySelector(".muscle-figure").addEventListener("click", (event) => {
-      const zone = event.target.closest("[data-map-group]");
-      if (!zone) {
-        return;
-      }
-      selectLibraryGroup(zone.dataset.mapGroup);
-    });
-    document.querySelector(".muscle-figure").addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") {
-        return;
-      }
-      const zone = event.target.closest("[data-map-group]");
-      if (!zone) {
-        return;
-      }
-      event.preventDefault();
-      selectLibraryGroup(zone.dataset.mapGroup);
     });
 
     els.historyExerciseFilter.addEventListener("change", () => {
@@ -483,9 +516,6 @@
       return `<button class="map-chip${active}" type="button" data-map-group="${escapeHtml(group)}">${escapeHtml(label)}</button>`;
     }).join("");
 
-    document.querySelectorAll(".svg-button[data-map-group]").forEach((zone) => {
-      zone.classList.toggle("active", Boolean(selectedLibraryGroup) && zone.dataset.mapGroup === selectedLibraryGroup);
-    });
   }
 
   function selectLibraryGroup(group) {

@@ -281,7 +281,7 @@ h3 {
 
 .log-form,
 .compact-form,
-.muscle-map-panel,
+.muscle-picker-panel,
 .chart-panel,
 .detail-panel,
 .data-summary {
@@ -299,7 +299,7 @@ h3 {
   gap: 0.9rem;
 }
 
-.muscle-map-panel {
+.muscle-picker-panel {
   display: grid;
   gap: 1rem;
 }
@@ -311,51 +311,6 @@ h3 {
   gap: 0.75rem;
 }
 
-.muscle-map-layout {
-  display: grid;
-  gap: 1rem;
-}
-
-.muscle-figure {
-  width: 100%;
-  max-width: 360px;
-  margin: 0 auto;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: #0d1112;
-}
-
-.body-part {
-  stroke: #344045;
-  stroke-width: 2;
-}
-
-.body-part.neutral {
-  fill: #20282b;
-}
-
-.body-part.zone {
-  fill: rgba(53, 208, 127, 0.16);
-  stroke: rgba(53, 208, 127, 0.55);
-}
-
-.svg-button {
-  cursor: pointer;
-  outline: none;
-}
-
-.svg-button:hover .body-part.zone,
-.svg-button:focus .body-part.zone,
-.svg-button.active .body-part.zone {
-  fill: rgba(53, 208, 127, 0.76);
-  stroke: var(--accent);
-}
-
-.heart-mark {
-  fill: #101314;
-  pointer-events: none;
-}
-
 .muscle-chip-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -363,7 +318,8 @@ h3 {
 }
 
 .map-chip {
-  min-height: 44px;
+  min-height: 54px;
+  padding: 0.75rem;
   border: 1px solid var(--border);
   background: var(--surface-strong);
   color: var(--text);
@@ -769,11 +725,6 @@ h3 {
 
   .flow-grid {
     grid-template-columns: 1.1fr 1.5fr 0.8fr 0.8fr 1fr;
-  }
-
-  .muscle-map-layout {
-    grid-template-columns: minmax(260px, 0.9fr) minmax(220px, 1fr);
-    align-items: center;
   }
 
   .optional-grid {

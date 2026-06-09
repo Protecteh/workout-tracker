@@ -724,7 +724,7 @@ h3 {
   }
 
   .flow-grid {
-    grid-template-columns: 1.1fr 1.5fr 0.8fr 0.8fr 1fr;
+    grid-template-columns: 1fr 1fr 1.4fr 0.7fr 0.7fr 0.9fr;
   }
 
   .optional-grid {

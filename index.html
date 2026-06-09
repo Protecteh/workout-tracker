@@ -44,7 +44,7 @@
           <button id="addExerciseToggle" class="ghost-button" type="button">Hide quick log</button>
         </div>
 
-        <div class="metric-grid today-metrics" aria-label="Today's totals">
+        <div id="selectedDateMetrics" class="metric-grid today-metrics" aria-label="Selected date totals">
           <article class="metric">
             <span>Total sets</span>
             <strong id="todayTotalSets">0</strong>
@@ -62,23 +62,27 @@
         <form id="todayForm" class="log-form" autocomplete="off">
           <div class="flow-grid">
             <label class="step-field">
-              <span><strong>1</strong> Target muscle</span>
+              <span><strong>1</strong> Workout date</span>
+              <input id="workoutDateInput" type="date" required>
+            </label>
+            <label class="step-field">
+              <span><strong>2</strong> Target muscle</span>
               <select id="targetMuscleSelect" required></select>
             </label>
             <label class="step-field">
-              <span><strong>2</strong> Exercise</span>
+              <span><strong>3</strong> Exercise</span>
               <select id="exerciseSelect" required></select>
             </label>
             <label class="step-field">
-              <span><strong>3</strong> Sets</span>
+              <span><strong>4</strong> Sets</span>
               <select id="setsInput"></select>
             </label>
             <label class="step-field">
-              <span><strong>4</strong> Reps</span>
+              <span><strong>5</strong> Reps</span>
               <select id="repsInput"></select>
             </label>
             <label class="step-field">
-              <span><strong>5</strong> Weight</span>
+              <span><strong>6</strong> Weight</span>
               <select id="weightInput"></select>
             </label>
           </div>
@@ -134,7 +138,7 @@
         </form>
 
         <div class="subhead">
-          <h3>Today's log</h3>
+          <h3 id="selectedDateLogTitle">Selected date log</h3>
           <span id="todayEntryCount" class="muted">0 exercises</span>
         </div>
         <div id="todayEntries" class="item-list empty-list"></div>

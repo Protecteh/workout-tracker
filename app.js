@@ -117,6 +117,7 @@
     els.installButton = document.getElementById("installButton");
     els.addExerciseToggle = document.getElementById("addExerciseToggle");
     els.todayForm = document.getElementById("todayForm");
+    els.workoutDateInput = document.getElementById("workoutDateInput");
     els.targetMuscleSelect = document.getElementById("targetMuscleSelect");
     els.exerciseSelect = document.getElementById("exerciseSelect");
     els.setsInput = document.getElementById("setsInput");
@@ -135,6 +136,7 @@
     els.todayTotalSets = document.getElementById("todayTotalSets");
     els.todayTotalReps = document.getElementById("todayTotalReps");
     els.todayTotalPushups = document.getElementById("todayTotalPushups");
+    els.selectedDateLogTitle = document.getElementById("selectedDateLogTitle");
     els.todayEntryCount = document.getElementById("todayEntryCount");
     els.todayEntries = document.getElementById("todayEntries");
     els.exerciseForm = document.getElementById("exerciseForm");
@@ -186,6 +188,7 @@
       { value: "", label: "All muscle groups" },
       ...MUSCLE_GROUPS.map((group) => ({ value: group, label: group }))
     ]);
+    els.workoutDateInput.value = todayISO();
     els.bodyweightDateInput.value = todayISO();
   }
 
@@ -205,6 +208,7 @@
     });
 
     els.todayForm.addEventListener("submit", handleTodaySubmit);
+    els.workoutDateInput.addEventListener("change", renderToday);
     els.clearTodayForm.addEventListener("click", () => {
       resetLogForm(true);
       showToast("Form cleared.");
@@ -412,7 +416,10 @@
   function renderDateLabels() {
     const today = todayISO();
     els.currentDateLabel.textContent = formatLongDate(today);
-    els.todayTitle.textContent = `Log ${formatLongDate(today)}`;
+    const selectedDate = selectedWorkoutDate();
+    els.todayTitle.textContent = selectedDate === today
+      ? `Log ${formatLongDate(today)}`
+      : `Log ${formatLongDate(selectedDate)}`;
   }
 
   function renderExerciseSelects() {
@@ -443,7 +450,8 @@
   }
 
   function renderToday() {
-    const entries = todaysEntries();
+    const date = selectedWorkoutDate();
+    const entries = entriesForDate(date);
     const totals = entries.reduce(
       (acc, entry) => {
         acc.sets += entryTotalSets(entry);
@@ -457,13 +465,15 @@
     els.todayTotalSets.textContent = formatNumber(totals.sets);
     els.todayTotalReps.textContent = formatNumber(totals.reps);
     els.todayTotalPushups.textContent = formatNumber(totals.pushups);
+    els.selectedDateLogTitle.textContent = date === todayISO() ? "Today's log" : `${formatLongDate(date)} log`;
     els.todayEntryCount.textContent = `${entries.length} ${entries.length === 1 ? "exercise" : "exercises"}`;
 
     els.todayEntries.innerHTML = entries
       .slice()
       .reverse()
-      .map((entry) => renderEntryCard(entry, todayISO(), true))
+      .map((entry) => renderEntryCard(entry, date, true))
       .join("");
+    renderDateLabels();
   }
 
   function renderLibrary() {
@@ -735,12 +745,12 @@
       return;
     }
 
-    const date = todayISO();
+    const date = selectedWorkoutDate();
     ensureWorkout(date).entries.push(entry);
     persist();
     resetLogForm(true);
     renderAll();
-    showToast(`${entry.exerciseName} saved for today.`);
+    showToast(`${entry.exerciseName} saved for ${formatLongDate(date)}.`);
   }
 
   function handleExerciseSubmit(event) {
@@ -964,11 +974,15 @@
   function resetLogForm(keepExercise) {
     const selected = els.exerciseSelect.value;
     const selectedGroup = els.targetMuscleSelect.value;
+    const selectedDate = els.workoutDateInput.value;
     els.todayForm.reset();
     if (keepExercise) {
+      els.workoutDateInput.value = selectedDate;
       els.targetMuscleSelect.value = selectedGroup;
       renderExerciseSelects();
       els.exerciseSelect.value = selected;
+    } else {
+      els.workoutDateInput.value = todayISO();
     }
     els.setsInput.value = "3";
     els.repsInput.value = "10";
@@ -1080,8 +1094,12 @@
     return allExercises().find((exercise) => exercise.id === id);
   }
 
-  function todaysEntries() {
-    const workout = state.workouts[todayISO()];
+  function selectedWorkoutDate() {
+    return isISODate(els.workoutDateInput.value) ? els.workoutDateInput.value : todayISO();
+  }
+
+  function entriesForDate(date) {
+    const workout = state.workouts[date];
     return workout ? workout.entries : [];
   }
 

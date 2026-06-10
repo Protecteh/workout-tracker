@@ -52,6 +52,9 @@
           </article>
 
           <div id="mealList"></div>
+          <div class="home-actions">
+            <button id="addTime" class="soft-button" type="button">Legg til tidspunkt</button>
+          </div>
         </section>
 
         <section id="historyView" class="view" aria-labelledby="historyTitle">
@@ -131,15 +134,6 @@
           </article>
 
           <article class="planner-card compact">
-            <h3>Tidspunkter</h3>
-            <div id="timeSettings" class="time-settings"></div>
-            <div class="button-stack">
-              <button id="addTime" class="soft-button" type="button">Legg til tidspunkt</button>
-            </div>
-            <p class="hint">Endrer kortene på forsiden og tidene som brukes til påminnelser.</p>
-          </article>
-
-          <article class="planner-card compact">
             <h3>Utseende</h3>
             <label class="toggle-row">
               <span>Mørk modus</span>
@@ -174,7 +168,8 @@
     <template id="mealTemplate">
       <article class="meal-card">
         <div class="meal-header">
-          <strong class="time-pill"></strong>
+          <input class="time-pill time-pill-input" type="time" aria-label="Rediger tidspunkt" />
+          <button class="remove-time-button" type="button" aria-label="Fjern tidspunkt">×</button>
           <span>✿ Matregistrering</span>
         </div>
         <label class="field">

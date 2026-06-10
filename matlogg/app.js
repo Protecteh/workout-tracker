@@ -134,7 +134,6 @@ function render() {
   renderHome();
   renderHistory();
   renderStats();
-  renderSettings();
 }
 
 function renderHome() {
@@ -179,7 +178,12 @@ function renderMeals(day) {
   day.meals.forEach((meal) => {
     const node = template.content.firstElementChild.cloneNode(true);
     node.dataset.time = meal.time;
-    node.querySelector('.time-pill').textContent = meal.time;
+    const timeInput = node.querySelector('.time-pill-input');
+    timeInput.value = meal.time;
+    timeInput.dataset.oldTime = meal.time;
+    const removeButton = node.querySelector('.remove-time-button');
+    removeButton.dataset.removeTime = meal.time;
+    removeButton.hidden = day.meals.length <= 1;
     const textarea = node.querySelector('textarea');
     textarea.value = meal.note;
     textarea.addEventListener('input', () => {
@@ -211,18 +215,6 @@ function renderMeals(day) {
     `).join('');
     mealList.appendChild(node);
   });
-}
-
-function renderSettings() {
-  const timeSettings = $('#timeSettings');
-  if (!timeSettings) return;
-  const times = getMealTimes();
-  timeSettings.innerHTML = times.map((time, index) => `
-    <div class="time-row">
-      <input type="time" value="${time}" data-time-index="${index}" aria-label="Tidspunkt ${index + 1}" />
-      <button type="button" data-remove-time="${index}" aria-label="Fjern tidspunkt">×</button>
-    </div>
-  `).join('');
 }
 
 function renderHistory() {
@@ -573,19 +565,35 @@ function bindEvents() {
     if (removeTime) {
       const times = getMealTimes();
       if (times.length <= 1) return;
-      times.splice(Number(removeTime.dataset.removeTime), 1);
-      saveMealTimes(times);
+      const timeToRemove = removeTime.dataset.removeTime;
+      saveMealTimes(times.filter((time) => time !== timeToRemove));
+      const entries = loadEntries();
+      Object.values(entries).forEach((day) => {
+        day.meals = (day.meals || []).filter((meal) => meal.time !== timeToRemove);
+      });
+      saveEntries(entries);
       render();
       setupReminders(loadSettings().reminders);
     }
   });
 
   document.body.addEventListener('change', (event) => {
-    const timeInput = event.target.closest('[data-time-index]');
+    const timeInput = event.target.closest('.time-pill-input');
     if (!timeInput) return;
+    const oldTime = timeInput.dataset.oldTime;
+    const newTime = timeInput.value;
+    if (!oldTime || !newTime || oldTime === newTime) return;
     const times = getMealTimes();
-    times[Number(timeInput.dataset.timeIndex)] = timeInput.value;
+    const index = times.indexOf(oldTime);
+    if (index === -1) return;
+    times[index] = newTime;
     saveMealTimes(times);
+    const entries = loadEntries();
+    Object.values(entries).forEach((day) => {
+      const meal = (day.meals || []).find((item) => item.time === oldTime);
+      if (meal) meal.time = newTime;
+    });
+    saveEntries(entries);
     render();
     setupReminders(loadSettings().reminders);
   });

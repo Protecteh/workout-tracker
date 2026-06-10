@@ -255,12 +255,37 @@ body.dark .date-picker {
   gap: 10px;
   margin-bottom: 12px;
   font-weight: 900;
+  flex-wrap: wrap;
 }
 
 .time-pill {
   padding: 9px 13px;
   background: var(--pink-soft);
   border-radius: 15px;
+}
+
+.time-pill-input {
+  width: 86px;
+  min-height: 42px;
+  color: var(--ink);
+  border: 0;
+  outline: 0;
+  font-weight: 950;
+}
+
+.time-pill-input:focus {
+  box-shadow: 0 0 0 4px rgba(239, 111, 154, 0.18);
+}
+
+.remove-time-button {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 14px;
+  color: var(--ink);
+  background: rgba(255, 221, 234, 0.72);
+  font-size: 1.2rem;
+  font-weight: 950;
 }
 
 .symptom-wrap,
@@ -402,36 +427,9 @@ body.dark .date-picker {
   margin-top: 12px;
 }
 
-.time-settings {
+.home-actions {
   display: grid;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.time-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: center;
-}
-
-.time-row input {
-  min-height: 46px;
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.55);
-  border: 1.5px solid var(--line);
-  border-radius: 18px;
-  padding: 10px 12px;
-}
-
-.time-row button {
-  min-width: 46px;
-  min-height: 46px;
-  border: 0;
-  border-radius: 16px;
-  color: var(--ink);
-  background: var(--pink-soft);
-  font-weight: 950;
+  padding: 4px 0 16px;
 }
 
 .bottom-nav {

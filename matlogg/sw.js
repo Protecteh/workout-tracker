@@ -1,4 +1,4 @@
-const CACHE_NAME = 'matlogg-v2';
+const CACHE_NAME = 'matlogg-v3';
 const ASSETS = [
   './',
   './index.html',

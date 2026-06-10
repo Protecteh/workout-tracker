@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f46f9d" />
+    <meta name="description" content="Matlogg - humør, matregistrering og symptomer i en søt plannerstil." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Matlogg</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="doodle cup" aria-hidden="true">
+          <span>🌷</span>
+          <span>♡</span>
+        </div>
+        <div>
+          <h1>Matlogg ♡</h1>
+          <p>Humør & matregistrering</p>
+        </div>
+        <div class="doodle book" aria-hidden="true">📒</div>
+      </header>
+
+      <main>
+        <section id="homeView" class="view active" aria-labelledby="todayTitle">
+          <div class="toolbar">
+            <div>
+              <p class="eyebrow">I dag</p>
+              <h2 id="todayTitle"></h2>
+            </div>
+            <input id="datePicker" class="date-picker" type="date" aria-label="Velg dato" />
+          </div>
+
+          <article class="planner-card">
+            <div class="date-badge">
+              <strong id="weekdayBadge"></strong>
+              <span id="dateBadge"></span>
+              <small>♡</small>
+            </div>
+
+            <div class="mood-area">
+              <h3>Humør i dag:</h3>
+              <div id="moodButtons" class="mood-grid" role="radiogroup" aria-label="Velg humør"></div>
+            </div>
+
+            <label class="field day-comment">
+              <span>Kommentar for dagen:</span>
+              <textarea id="dayComment" rows="3" placeholder="Skriv tanker, energi, søvn eller noe du vil huske..."></textarea>
+            </label>
+          </article>
+
+          <div id="mealList"></div>
+        </section>
+
+        <section id="historyView" class="view" aria-labelledby="historyTitle">
+          <div class="toolbar">
+            <div>
+              <p class="eyebrow">Kalender</p>
+              <h2 id="historyTitle">Historikk</h2>
+            </div>
+            <button id="todayButton" class="soft-button" type="button">Til i dag</button>
+          </div>
+          <article class="planner-card compact">
+            <label class="field">
+              <span>Velg dato og rediger gamle registreringer</span>
+              <input id="historyDate" type="date" />
+            </label>
+          </article>
+          <div id="historyList" class="history-list"></div>
+        </section>
+
+        <section id="statsView" class="view" aria-labelledby="statsTitle">
+          <div class="toolbar">
+            <div>
+              <p class="eyebrow">Uke og måned</p>
+              <h2 id="statsTitle">Statistikk</h2>
+            </div>
+            <div class="segment" role="group" aria-label="Statistikkperiode">
+              <button class="active" data-period="week" type="button">Uke</button>
+              <button data-period="month" type="button">Måned</button>
+            </div>
+          </div>
+
+          <article class="planner-card">
+            <h3>Humørgraf</h3>
+            <canvas id="moodChart" width="640" height="260" aria-label="Humørgraf"></canvas>
+          </article>
+
+          <div class="metric-grid">
+            <article class="metric"><strong id="nauseaDays">0</strong><span>Dager med kvalme</span></article>
+            <article class="metric"><strong id="vomitDays">0</strong><span>Dager med oppkast</span></article>
+            <article class="metric"><strong id="loggedDays">0</strong><span>Registrerte dager</span></article>
+          </div>
+
+          <article class="planner-card compact">
+            <h3>Registrerte symptomer</h3>
+            <div id="symptomStats"></div>
+          </article>
+
+          <article class="planner-card compact">
+            <h3>Sammenheng mellom mat og symptomer</h3>
+            <div id="correlations"></div>
+          </article>
+        </section>
+
+        <section id="settingsView" class="view" aria-labelledby="settingsTitle">
+          <div class="toolbar">
+            <div>
+              <p class="eyebrow">Deling og valg</p>
+              <h2 id="settingsTitle">Innstillinger</h2>
+            </div>
+          </div>
+
+          <article class="planner-card compact">
+            <h3>Påminnelser</h3>
+            <label class="toggle-row">
+              <span>Varsel kl. 10:00, 16:00 og 21:00</span>
+              <input id="remindersToggle" type="checkbox" />
+            </label>
+            <p class="hint">Nettleseren spør om tillatelse første gang. Varsler fungerer når appen er installert eller åpen i nettleseren.</p>
+          </article>
+
+          <article class="planner-card compact">
+            <h3>Utseende</h3>
+            <label class="toggle-row">
+              <span>Mørk modus</span>
+              <input id="darkToggle" type="checkbox" />
+            </label>
+          </article>
+
+          <article class="planner-card compact">
+            <h3>Eksport</h3>
+            <div class="button-stack">
+              <button id="exportPdf" class="primary-button" type="button">Eksporter til PDF</button>
+              <button id="exportJpg" class="soft-button" type="button">Eksporter til JPG</button>
+              <button id="shareData" class="soft-button" type="button">Del via e-post eller meldinger</button>
+            </div>
+          </article>
+
+          <article class="planner-card compact">
+            <h3>Automatisk sikkerhetskopi</h3>
+            <p class="hint">Data lagres lokalt på enheten. Hver endring oppdaterer en lokal sikkerhetskopi i nettleserens lagring.</p>
+          </article>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Hovedmeny">
+        <button class="active" data-view="homeView" type="button">♡<span>I dag</span></button>
+        <button data-view="historyView" type="button">🗓<span>Historikk</span></button>
+        <button data-view="statsView" type="button">📊<span>Statistikk</span></button>
+        <button data-view="settingsView" type="button">⚙<span>Valg</span></button>
+      </nav>
+    </div>
+
+    <template id="mealTemplate">
+      <article class="meal-card">
+        <div class="meal-header">
+          <strong class="time-pill"></strong>
+          <span>✿ Matregistrering</span>
+        </div>
+        <label class="field">
+          <span class="visually-hidden">Matregistrering</span>
+          <textarea rows="3" placeholder="Hva spiste/drakk du? Mengde, situasjon eller tanker..."></textarea>
+        </label>
+        <div class="symptom-wrap" aria-label="Symptomer"></div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

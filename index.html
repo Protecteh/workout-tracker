@@ -67,8 +67,13 @@
           </div>
           <div class="button-row rest-day-actions">
             <button id="markRestDayButton" class="ghost-button" type="button">Mark rest day</button>
+            <button id="saveRestDayNoteButton" class="ghost-button hidden" type="button">Save note</button>
             <button id="clearRestDayButton" class="danger-button hidden" type="button">Clear rest day</button>
           </div>
+          <label class="form-row rest-note-field">
+            <span>Rest day note</span>
+            <textarea id="restDayNoteInput" rows="2" placeholder="Optional: tired, sick, travel, sore, deload..."></textarea>
+          </label>
         </div>
 
         <form id="todayForm" class="log-form" autocomplete="off">
@@ -82,19 +87,23 @@
               <select id="targetMuscleSelect" required></select>
             </label>
             <label class="step-field">
-              <span><strong>3</strong> Exercise</span>
+              <span><strong>3</strong> Specific area</span>
+              <select id="targetAreaSelect" required></select>
+            </label>
+            <label class="step-field">
+              <span><strong>4</strong> Exercise</span>
               <select id="exerciseSelect" required></select>
             </label>
             <label class="step-field">
-              <span><strong>4</strong> Sets</span>
+              <span><strong>5</strong> Sets</span>
               <select id="setsInput"></select>
             </label>
             <label class="step-field">
-              <span><strong>5</strong> Reps</span>
+              <span><strong>6</strong> Reps</span>
               <select id="repsInput"></select>
             </label>
             <label class="step-field">
-              <span><strong>6</strong> Weight</span>
+              <span><strong>7</strong> Weight</span>
               <select id="weightInput"></select>
             </label>
           </div>
@@ -174,6 +183,7 @@
           </div>
 
           <div id="muscleMapChips" class="muscle-chip-grid" aria-label="Muscle groups"></div>
+          <div id="libraryAreaChips" class="area-chip-grid hidden" aria-label="Specific muscle areas"></div>
         </section>
 
         <form id="exerciseForm" class="compact-form" autocomplete="off">
@@ -182,10 +192,14 @@
             <span>Exercise name</span>
             <input id="customName" type="text" placeholder="Add a custom exercise" required>
           </label>
-          <div class="two-col">
+          <div class="three-col">
             <label>
               <span>Muscle group</span>
               <select id="customGroup" required></select>
+            </label>
+            <label>
+              <span>Specific area</span>
+              <select id="customArea" required></select>
             </label>
             <label>
               <span>Type</span>

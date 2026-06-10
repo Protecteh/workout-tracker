@@ -6,6 +6,128 @@
 
   const MUSCLE_GROUPS = ["Chest", "Back", "Shoulders", "Arms", "Legs", "Core", "Cardio"];
   const EXERCISE_TYPES = ["strength", "bodyweight", "cardio", "mobility"];
+  const MUSCLE_AREAS = {
+    Chest: [
+      { id: "upper-chest", name: "Upper chest", anatomy: "Clavicular pectoralis" },
+      { id: "mid-chest", name: "Mid chest", anatomy: "Sternal pectoralis" },
+      { id: "lower-chest", name: "Lower chest", anatomy: "Costal pectoralis" },
+      { id: "chest-fly", name: "Chest fly / squeeze", anatomy: "Pectoral adduction" }
+    ],
+    Back: [
+      { id: "lats", name: "Lats", anatomy: "Latissimus dorsi" },
+      { id: "upper-back", name: "Upper back", anatomy: "Trapezius and rhomboids" },
+      { id: "mid-back", name: "Mid back", anatomy: "Rhomboids and middle traps" },
+      { id: "lower-back", name: "Lower back", anatomy: "Erector spinae" }
+    ],
+    Shoulders: [
+      { id: "front-delts", name: "Front delts", anatomy: "Anterior deltoid" },
+      { id: "side-delts", name: "Side delts", anatomy: "Lateral deltoid" },
+      { id: "rear-delts", name: "Rear delts", anatomy: "Posterior deltoid" },
+      { id: "traps", name: "Traps", anatomy: "Upper trapezius" }
+    ],
+    Arms: [
+      { id: "biceps", name: "Biceps", anatomy: "Biceps brachii" },
+      { id: "brachialis-forearms", name: "Brachialis / forearms", anatomy: "Brachialis and brachioradialis" },
+      { id: "triceps-long-head", name: "Triceps long head", anatomy: "Posterior upper arm" },
+      { id: "triceps-pressdown", name: "Triceps pressdown", anatomy: "Lateral and medial heads" }
+    ],
+    Legs: [
+      { id: "quads", name: "Quads", anatomy: "Quadriceps femoris" },
+      { id: "hamstrings", name: "Hamstrings", anatomy: "Posterior thigh" },
+      { id: "glutes", name: "Glutes", anatomy: "Gluteus maximus and medius" },
+      { id: "calves", name: "Calves", anatomy: "Gastrocnemius and soleus" },
+      { id: "hips-adductors", name: "Hips / adductors", anatomy: "Hip abductors and adductors" }
+    ],
+    Core: [
+      { id: "abs", name: "Abs", anatomy: "Rectus abdominis" },
+      { id: "lower-abs", name: "Lower abs / hip flexors", anatomy: "Iliopsoas and lower trunk" },
+      { id: "obliques", name: "Obliques", anatomy: "Internal and external obliques" },
+      { id: "deep-core", name: "Deep core", anatomy: "Transverse abdominis" }
+    ],
+    Cardio: [
+      { id: "steady-cardio", name: "Steady cardio", anatomy: "Aerobic base" },
+      { id: "low-impact", name: "Low impact", anatomy: "Joint-friendly endurance" },
+      { id: "intervals", name: "Intervals", anatomy: "High-intensity conditioning" },
+      { id: "conditioning", name: "Conditioning", anatomy: "Full-body work capacity" }
+    ]
+  };
+
+  const DEFAULT_EXERCISE_AREAS = {
+    "default-pushups": "mid-chest",
+    "default-bench-press": "mid-chest",
+    "default-incline-press": "upper-chest",
+    "default-dips": "lower-chest",
+    "default-cable-fly": "chest-fly",
+    "default-dumbbell-bench-press": "mid-chest",
+    "default-chest-press-machine": "mid-chest",
+    "default-pec-deck-fly": "chest-fly",
+    "default-decline-press": "lower-chest",
+    "default-dumbbell-fly": "chest-fly",
+    "default-pullups": "lats",
+    "default-chinups": "lats",
+    "default-rows": "mid-back",
+    "default-lat-pulldown": "lats",
+    "default-seated-cable-row": "mid-back",
+    "default-barbell-row": "mid-back",
+    "default-dumbbell-row": "mid-back",
+    "default-deadlift": "lower-back",
+    "default-face-pull": "upper-back",
+    "default-straight-arm-pulldown": "lats",
+    "default-overhead-press": "front-delts",
+    "default-lateral-raises": "side-delts",
+    "default-rear-delt-fly": "rear-delts",
+    "default-dumbbell-shoulder-press": "front-delts",
+    "default-shoulder-press-machine": "front-delts",
+    "default-front-raises": "front-delts",
+    "default-arnold-press": "front-delts",
+    "default-upright-row": "side-delts",
+    "default-cable-lateral-raise": "side-delts",
+    "default-shrugs": "traps",
+    "default-curls": "biceps",
+    "default-triceps-pushdown": "triceps-pressdown",
+    "default-skull-crushers": "triceps-long-head",
+    "default-hammer-curls": "brachialis-forearms",
+    "default-preacher-curls": "biceps",
+    "default-cable-curls": "biceps",
+    "default-triceps-dips": "triceps-pressdown",
+    "default-overhead-triceps-extension": "triceps-long-head",
+    "default-close-grip-bench-press": "triceps-pressdown",
+    "default-concentration-curls": "biceps",
+    "default-squats": "quads",
+    "default-leg-press": "quads",
+    "default-lunges": "quads",
+    "default-calf-raises": "calves",
+    "default-romanian-deadlift": "hamstrings",
+    "default-leg-extension": "quads",
+    "default-leg-curl": "hamstrings",
+    "default-hip-thrust": "glutes",
+    "default-bulgarian-split-squat": "glutes",
+    "default-goblet-squat": "quads",
+    "default-step-ups": "glutes",
+    "default-hip-abduction-machine": "hips-adductors",
+    "default-hip-adduction-machine": "hips-adductors",
+    "default-plank": "deep-core",
+    "default-hanging-leg-raises": "lower-abs",
+    "default-crunches": "abs",
+    "default-sit-ups": "abs",
+    "default-russian-twists": "obliques",
+    "default-bicycle-crunches": "obliques",
+    "default-cable-crunch": "abs",
+    "default-ab-wheel-rollout": "deep-core",
+    "default-mountain-climbers": "deep-core",
+    "default-dead-bug": "deep-core",
+    "default-walking": "steady-cardio",
+    "default-running": "steady-cardio",
+    "default-cycling": "steady-cardio",
+    "default-elliptical": "low-impact",
+    "default-rowing-machine": "conditioning",
+    "default-stair-climber": "conditioning",
+    "default-jump-rope": "conditioning",
+    "default-swimming": "low-impact",
+    "default-hiking": "steady-cardio",
+    "default-sprint-intervals": "intervals",
+    "default-bike-intervals": "intervals"
+  };
 
   const DEFAULT_EXERCISES = [
     { id: "default-pushups", name: "Pushups", muscleGroup: "Chest", type: "bodyweight" },
@@ -63,6 +185,8 @@
     { id: "default-bulgarian-split-squat", name: "Bulgarian split squat", muscleGroup: "Legs", type: "strength" },
     { id: "default-goblet-squat", name: "Goblet squat", muscleGroup: "Legs", type: "strength" },
     { id: "default-step-ups", name: "Step-ups", muscleGroup: "Legs", type: "bodyweight" },
+    { id: "default-hip-abduction-machine", name: "Hip abduction machine", muscleGroup: "Legs", type: "strength" },
+    { id: "default-hip-adduction-machine", name: "Hip adduction machine", muscleGroup: "Legs", type: "strength" },
 
     { id: "default-plank", name: "Plank", muscleGroup: "Core", type: "bodyweight" },
     { id: "default-hanging-leg-raises", name: "Hanging leg raises", muscleGroup: "Core", type: "bodyweight" },
@@ -83,14 +207,20 @@
     { id: "default-stair-climber", name: "Stair climber", muscleGroup: "Cardio", type: "cardio" },
     { id: "default-jump-rope", name: "Jump rope", muscleGroup: "Cardio", type: "cardio" },
     { id: "default-swimming", name: "Swimming", muscleGroup: "Cardio", type: "cardio" },
-    { id: "default-hiking", name: "Hiking", muscleGroup: "Cardio", type: "cardio" }
-  ];
+    { id: "default-hiking", name: "Hiking", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-sprint-intervals", name: "Sprint intervals", muscleGroup: "Cardio", type: "cardio" },
+    { id: "default-bike-intervals", name: "Bike intervals", muscleGroup: "Cardio", type: "cardio" }
+  ].map((exercise) => ({
+    ...exercise,
+    area: DEFAULT_EXERCISE_AREAS[exercise.id] || defaultAreaForGroup(exercise.muscleGroup)
+  }));
 
   const els = {};
   let state = loadState();
   let activeTab = "today";
   let selectedHistoryDate = "";
   let selectedLibraryGroup = "";
+  let selectedLibraryArea = "";
   let deferredInstallPrompt = null;
   let toastTimer = 0;
 
@@ -119,6 +249,7 @@
     els.todayForm = document.getElementById("todayForm");
     els.workoutDateInput = document.getElementById("workoutDateInput");
     els.targetMuscleSelect = document.getElementById("targetMuscleSelect");
+    els.targetAreaSelect = document.getElementById("targetAreaSelect");
     els.exerciseSelect = document.getElementById("exerciseSelect");
     els.setsInput = document.getElementById("setsInput");
     els.repsInput = document.getElementById("repsInput");
@@ -143,17 +274,21 @@
     els.restDayTitle = document.getElementById("restDayTitle");
     els.restDayText = document.getElementById("restDayText");
     els.markRestDayButton = document.getElementById("markRestDayButton");
+    els.saveRestDayNoteButton = document.getElementById("saveRestDayNoteButton");
     els.clearRestDayButton = document.getElementById("clearRestDayButton");
+    els.restDayNoteInput = document.getElementById("restDayNoteInput");
     els.exerciseForm = document.getElementById("exerciseForm");
     els.customExerciseId = document.getElementById("customExerciseId");
     els.customName = document.getElementById("customName");
     els.customGroup = document.getElementById("customGroup");
+    els.customArea = document.getElementById("customArea");
     els.customType = document.getElementById("customType");
     els.saveCustomExercise = document.getElementById("saveCustomExercise");
     els.cancelCustomEdit = document.getElementById("cancelCustomEdit");
     els.libraryList = document.getElementById("libraryList");
     els.librarySelectedGroup = document.getElementById("librarySelectedGroup");
     els.muscleMapChips = document.getElementById("muscleMapChips");
+    els.libraryAreaChips = document.getElementById("libraryAreaChips");
     els.historyExerciseFilter = document.getElementById("historyExerciseFilter");
     els.historyGroupFilter = document.getElementById("historyGroupFilter");
     els.historyList = document.getElementById("historyList");
@@ -183,11 +318,13 @@
 
   function seedStaticSelects() {
     fillSelect(els.targetMuscleSelect, MUSCLE_GROUPS.map((group) => ({ value: group, label: group })));
+    fillAreaSelect(els.targetAreaSelect, "Chest");
     fillSelect(els.setsInput, presetOptions("sets", 1, 10, 1, 3));
     fillSelect(els.repsInput, presetOptions("reps", 1, 50, 1, 10));
     els.setsInput.value = "3";
     els.repsInput.value = "10";
     fillSelect(els.customGroup, MUSCLE_GROUPS.map((group) => ({ value: group, label: group })));
+    fillAreaSelect(els.customArea, "Chest");
     fillSelect(els.customType, EXERCISE_TYPES.map((type) => ({ value: type, label: titleCase(type) })));
     fillSelect(els.historyGroupFilter, [
       { value: "", label: "All muscle groups" },
@@ -215,6 +352,7 @@
     els.todayForm.addEventListener("submit", handleTodaySubmit);
     els.workoutDateInput.addEventListener("change", renderToday);
     els.markRestDayButton.addEventListener("click", markSelectedDateRestDay);
+    els.saveRestDayNoteButton.addEventListener("click", saveSelectedRestDayNote);
     els.clearRestDayButton.addEventListener("click", clearSelectedDateRestDay);
     els.clearTodayForm.addEventListener("click", () => {
       resetLogForm(true);
@@ -222,6 +360,11 @@
     });
 
     els.targetMuscleSelect.addEventListener("change", () => {
+      renderExerciseSelects();
+      updatePushupFields();
+    });
+
+    els.targetAreaSelect.addEventListener("change", () => {
       renderExerciseSelects();
       updatePushupFields();
     });
@@ -241,6 +384,9 @@
 
     els.exerciseForm.addEventListener("submit", handleExerciseSubmit);
     els.cancelCustomEdit.addEventListener("click", resetExerciseForm);
+    els.customGroup.addEventListener("change", () => {
+      fillAreaSelect(els.customArea, els.customGroup.value, els.customArea.value);
+    });
     els.libraryList.addEventListener("click", handleLibraryAction);
     els.muscleMapChips.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-map-group]");
@@ -248,6 +394,13 @@
         return;
       }
       selectLibraryGroup(button.dataset.mapGroup);
+    });
+    els.libraryAreaChips.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-map-area]");
+      if (!button) {
+        return;
+      }
+      selectLibraryArea(button.dataset.mapArea);
     });
 
     els.historyExerciseFilter.addEventListener("change", () => {
@@ -361,6 +514,7 @@
         if (isISODate(date)) {
           normalized[date] = {
             date,
+            note: typeof item === "string" ? "" : String((item && item.note) || ""),
             createdAt: String((item && item.createdAt) || new Date().toISOString())
           };
         }
@@ -374,6 +528,7 @@
       }
       normalized[date] = {
         date,
+        note: String((value && value.note) || ""),
         createdAt: String((value && value.createdAt) || new Date().toISOString())
       };
     });
@@ -385,10 +540,12 @@
     if (!exercise || typeof exercise !== "object" || !exercise.name) {
       return null;
     }
+    const muscleGroup = MUSCLE_GROUPS.includes(exercise.muscleGroup) ? exercise.muscleGroup : "Chest";
     return {
       id: String(exercise.id || uid("custom")),
       name: String(exercise.name).trim(),
-      muscleGroup: MUSCLE_GROUPS.includes(exercise.muscleGroup) ? exercise.muscleGroup : "Chest",
+      muscleGroup,
+      area: normalizeExerciseArea(muscleGroup, exercise.area || exercise.bodyPart || exercise.targetArea),
       type: EXERCISE_TYPES.includes(exercise.type) ? exercise.type : "strength",
       custom: true
     };
@@ -398,11 +555,13 @@
     if (!entry || typeof entry !== "object" || !entry.exerciseName) {
       return null;
     }
+    const muscleGroup = MUSCLE_GROUPS.includes(entry.muscleGroup) ? entry.muscleGroup : "Chest";
     return {
       id: String(entry.id || uid("entry")),
       exerciseId: String(entry.exerciseId || ""),
       exerciseName: String(entry.exerciseName),
-      muscleGroup: MUSCLE_GROUPS.includes(entry.muscleGroup) ? entry.muscleGroup : "Chest",
+      muscleGroup,
+      area: normalizeExerciseArea(muscleGroup, entry.area || entry.bodyPart || entry.targetArea),
       type: EXERCISE_TYPES.includes(entry.type) ? entry.type : "strength",
       sets: numberOrZero(entry.sets),
       reps: numberOrZero(entry.reps),
@@ -464,11 +623,16 @@
 
   function renderExerciseSelects() {
     const previousExercise = els.exerciseSelect.value;
+    const previousArea = els.targetAreaSelect.value;
     const selectedGroup = MUSCLE_GROUPS.includes(els.targetMuscleSelect.value)
       ? els.targetMuscleSelect.value
       : "Chest";
+    fillAreaSelect(els.targetAreaSelect, selectedGroup, previousArea);
+    const selectedArea = normalizeExerciseArea(selectedGroup, els.targetAreaSelect.value);
     const exercises = allExercises();
-    const grouped = exercises.filter((exercise) => exercise.muscleGroup === selectedGroup);
+    const grouped = exercises.filter((exercise) => (
+      exercise.muscleGroup === selectedGroup && exercise.area === selectedArea
+    ));
     els.targetMuscleSelect.value = selectedGroup;
     els.exerciseSelect.innerHTML = "";
 
@@ -481,7 +645,7 @@
 
     if (previousExercise && grouped.some((exercise) => exercise.id === previousExercise)) {
       els.exerciseSelect.value = previousExercise;
-    } else if (selectedGroup === "Chest" && grouped.some((exercise) => exercise.id === "default-pushups")) {
+    } else if (selectedArea === "mid-chest" && grouped.some((exercise) => exercise.id === "default-pushups")) {
       els.exerciseSelect.value = "default-pushups";
     } else if (grouped.length) {
       els.exerciseSelect.value = grouped[0].id;
@@ -525,6 +689,7 @@
   function renderRestDayPanel(date, restDay, entryCount) {
     els.restDayPanel.classList.toggle("active", restDay);
     els.markRestDayButton.classList.toggle("hidden", restDay);
+    els.saveRestDayNoteButton.classList.toggle("hidden", !restDay);
     els.clearRestDayButton.classList.toggle("hidden", !restDay);
     els.restDayTitle.textContent = restDay ? "Rest day marked" : "No workout for this date?";
     els.restDayText.textContent = restDay
@@ -533,47 +698,81 @@
         ? "This date already has a workout logged. Delete the entries first if it was actually a rest day."
         : "Mark the selected date as a rest day when you did not train.";
     els.markRestDayButton.disabled = entryCount > 0;
+    els.restDayNoteInput.disabled = entryCount > 0 && !restDay;
+    els.restDayNoteInput.value = restDay ? restDayNote(date) : "";
   }
 
   function renderLibrary() {
     const exercises = allExercises();
-    const groupsToShow = selectedLibraryGroup ? [selectedLibraryGroup] : MUSCLE_GROUPS;
-    els.libraryList.innerHTML = groupsToShow.map((group) => {
+    if (selectedLibraryGroup) {
+      const areaIds = selectedLibraryArea
+        ? [selectedLibraryArea]
+        : areasForGroup(selectedLibraryGroup).map((area) => area.id);
+      const sections = areaIds
+        .map((areaId) => {
+          const meta = areaMeta(selectedLibraryGroup, areaId);
+          const grouped = exercises.filter((exercise) => (
+            exercise.muscleGroup === selectedLibraryGroup && exercise.area === areaId
+          ));
+          if (!grouped.length || !meta) {
+            return "";
+          }
+          return `
+            <section class="library-group area-section">
+              <div class="area-section-head">
+                <div>
+                  <h3>${escapeHtml(meta.name)}</h3>
+                  <p class="muted">${escapeHtml(meta.anatomy)}</p>
+                </div>
+                <span class="pill">${escapeHtml(selectedLibraryGroup)}</span>
+              </div>
+              <div class="library-grid">${grouped.map(renderExerciseCard).join("")}</div>
+            </section>
+          `;
+        })
+        .join("");
+
+      els.libraryList.innerHTML = sections || `<p class="muted empty-note">No exercises for this area yet. Add a custom one below.</p>`;
+      return;
+    }
+
+    els.libraryList.innerHTML = MUSCLE_GROUPS.map((group) => {
       const grouped = exercises.filter((exercise) => exercise.muscleGroup === group);
       if (!grouped.length) {
         return "";
       }
 
-      const cards = grouped
-        .map((exercise) => {
-          const isCustom = Boolean(exercise.custom);
-          return `
-            <article class="exercise-card ${isCustom ? "custom" : "default"}">
-              <div>
-                <div class="item-top">
-                  <h4 class="item-title">${escapeHtml(exercise.name)}</h4>
-                  <span class="tag ${isCustom ? "accent" : ""}">${isCustom ? "Custom" : "Default"}</span>
-                </div>
-                <p class="exercise-meta">${escapeHtml(group)} | ${escapeHtml(titleCase(exercise.type))}</p>
-              </div>
-              ${isCustom ? `
-                <div class="exercise-actions">
-                  <button class="ghost-button" type="button" data-action="edit" data-id="${escapeHtml(exercise.id)}">Edit</button>
-                  <button class="danger-button" type="button" data-action="delete" data-id="${escapeHtml(exercise.id)}">Delete</button>
-                </div>
-              ` : ""}
-            </article>
-          `;
-        })
-        .join("");
-
       return `
         <section class="library-group">
           <h3>${escapeHtml(group)}</h3>
-          <div class="library-grid">${cards}</div>
+          <div class="library-grid">${grouped.map(renderExerciseCard).join("")}</div>
         </section>
       `;
     }).join("");
+  }
+
+  function renderExerciseCard(exercise) {
+    const isCustom = Boolean(exercise.custom);
+    const meta = areaMeta(exercise.muscleGroup, exercise.area);
+    const areaText = meta ? `${meta.name} | ${meta.anatomy}` : "General";
+    return `
+      <article class="exercise-card ${isCustom ? "custom" : "default"}">
+        <div>
+          <div class="item-top">
+            <h4 class="item-title">${escapeHtml(exercise.name)}</h4>
+            <span class="tag ${isCustom ? "accent" : ""}">${isCustom ? "Custom" : "Default"}</span>
+          </div>
+          <p class="exercise-meta">${escapeHtml(exercise.muscleGroup)} | ${escapeHtml(areaText)} | ${escapeHtml(titleCase(exercise.type))}</p>
+        </div>
+        <div class="exercise-actions">
+          <button class="primary-button add-exercise-button" type="button" data-action="use" data-id="${escapeHtml(exercise.id)}">+ Add</button>
+          ${isCustom ? `
+            <button class="ghost-button" type="button" data-action="edit" data-id="${escapeHtml(exercise.id)}">Edit</button>
+            <button class="danger-button" type="button" data-action="delete" data-id="${escapeHtml(exercise.id)}">Delete</button>
+          ` : ""}
+        </div>
+      </article>
+    `;
   }
 
   function renderMuscleMap() {
@@ -585,16 +784,51 @@
       return `<button class="map-chip${active}" type="button" data-map-group="${escapeHtml(group)}">${escapeHtml(label)}</button>`;
     }).join("");
 
+    const areas = selectedLibraryGroup ? areasForGroup(selectedLibraryGroup) : [];
+    els.libraryAreaChips.classList.toggle("hidden", !selectedLibraryGroup);
+    els.libraryAreaChips.innerHTML = selectedLibraryGroup
+      ? [
+        `<button class="area-chip${selectedLibraryArea ? "" : " active"}" type="button" data-map-area="">All ${escapeHtml(selectedLibraryGroup)}</button>`,
+        ...areas.map((area) => {
+          const active = area.id === selectedLibraryArea ? " active" : "";
+          return `
+            <button class="area-chip${active}" type="button" data-map-area="${escapeHtml(area.id)}">
+              <strong>${escapeHtml(area.name)}</strong>
+              <span>${escapeHtml(area.anatomy)}</span>
+            </button>
+          `;
+        })
+      ].join("")
+      : "";
   }
 
   function selectLibraryGroup(group) {
     selectedLibraryGroup = MUSCLE_GROUPS.includes(group) ? group : "";
+    selectedLibraryArea = "";
     if (selectedLibraryGroup) {
       els.customGroup.value = selectedLibraryGroup;
+      fillAreaSelect(els.customArea, selectedLibraryGroup, selectedLibraryArea);
     }
     renderMuscleMap();
     renderLibrary();
     showToast(selectedLibraryGroup ? `Showing ${selectedLibraryGroup} exercises.` : "Showing all exercise groups.");
+    els.libraryList.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function selectLibraryArea(area) {
+    selectedLibraryArea = selectedLibraryGroup && area
+      ? normalizeExerciseArea(selectedLibraryGroup, area)
+      : "";
+    if (selectedLibraryGroup && selectedLibraryArea) {
+      els.customGroup.value = selectedLibraryGroup;
+      fillAreaSelect(els.customArea, selectedLibraryGroup, selectedLibraryArea);
+    }
+    renderMuscleMap();
+    renderLibrary();
+    const label = selectedLibraryArea
+      ? areaLabel(selectedLibraryGroup, selectedLibraryArea)
+      : `all ${selectedLibraryGroup}`;
+    showToast(`Showing ${label} exercises.`);
     els.libraryList.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -630,10 +864,11 @@
         const groups = Array.from(new Set(entries.map((entry) => entry.muscleGroup))).join(", ");
         const active = selectedHistoryDate === date ? " active" : "";
         const exerciseCount = `${entries.length} ${entries.length === 1 ? "exercise" : "exercises"}`;
+        const restMeta = restDayNote(date) ? `Rest day | ${restDayNote(date)}` : "Rest day | No workout";
         return `
           <button class="history-card${active}" type="button" data-history-date="${escapeHtml(date)}">
             <div class="history-title">${escapeHtml(formatLongDate(date))}</div>
-            <div class="history-meta">${restDay ? "Rest day | No workout" : `${exerciseCount} | ${formatNumber(totalReps)} reps | ${escapeHtml(groups || "No group")}`}</div>
+            <div class="history-meta">${restDay ? escapeHtml(restMeta) : `${exerciseCount} | ${formatNumber(totalReps)} reps | ${escapeHtml(groups || "No group")}`}</div>
           </button>
         `;
       })
@@ -802,6 +1037,7 @@
       exerciseId: exercise.id,
       exerciseName: exercise.name,
       muscleGroup: exercise.muscleGroup,
+      area: exercise.area,
       type: exercise.type,
       sets: readNumber(els.setsInput),
       reps: readNumber(els.repsInput),
@@ -833,9 +1069,10 @@
     event.preventDefault();
     const name = els.customName.value.trim();
     const muscleGroup = els.customGroup.value;
+    const area = normalizeExerciseArea(muscleGroup, els.customArea.value);
     const type = els.customType.value;
 
-    if (!name || !MUSCLE_GROUPS.includes(muscleGroup) || !EXERCISE_TYPES.includes(type)) {
+    if (!name || !MUSCLE_GROUPS.includes(muscleGroup) || !area || !EXERCISE_TYPES.includes(type)) {
       showToast("Complete the custom exercise fields.");
       return;
     }
@@ -846,6 +1083,7 @@
       if (exercise) {
         exercise.name = name;
         exercise.muscleGroup = muscleGroup;
+        exercise.area = area;
         exercise.type = type;
         showToast("Custom exercise updated.");
       }
@@ -854,6 +1092,7 @@
         id: uid("custom"),
         name,
         muscleGroup,
+        area,
         type,
         custom: true
       });
@@ -872,6 +1111,11 @@
     }
 
     const id = button.dataset.id;
+    if (button.dataset.action === "use") {
+      useExerciseInToday(id);
+      return;
+    }
+
     const exercise = state.customExercises.find((item) => item.id === id);
     if (!exercise) {
       return;
@@ -881,6 +1125,7 @@
       els.customExerciseId.value = exercise.id;
       els.customName.value = exercise.name;
       els.customGroup.value = exercise.muscleGroup;
+      fillAreaSelect(els.customArea, exercise.muscleGroup, exercise.area);
       els.customType.value = exercise.type;
       els.saveCustomExercise.textContent = "Save changes";
       els.cancelCustomEdit.classList.remove("hidden");
@@ -899,6 +1144,25 @@
       renderAll();
       showToast("Custom exercise deleted.");
     }
+  }
+
+  function useExerciseInToday(id) {
+    const exercise = findExercise(id);
+    if (!exercise) {
+      showToast("That exercise is not available anymore.");
+      return;
+    }
+
+    els.targetMuscleSelect.value = exercise.muscleGroup;
+    fillAreaSelect(els.targetAreaSelect, exercise.muscleGroup, exercise.area);
+    renderExerciseSelects();
+    els.exerciseSelect.value = exercise.id;
+    updatePushupFields();
+    els.todayForm.classList.remove("hidden");
+    els.addExerciseToggle.textContent = "Hide quick log";
+    setActiveTab("today");
+    window.requestAnimationFrame(() => els.setsInput.focus());
+    showToast(`${exercise.name} selected. Add sets, reps, and weight.`);
   }
 
   function handleBodyweightSubmit(event) {
@@ -954,10 +1218,27 @@
       return;
     }
 
-    state.restDays[date] = { date, createdAt: new Date().toISOString() };
+    state.restDays[date] = {
+      date,
+      note: els.restDayNoteInput.value.trim(),
+      createdAt: new Date().toISOString()
+    };
     persist();
     renderAll();
     showToast(`${formatLongDate(date)} marked as a rest day.`);
+  }
+
+  function saveSelectedRestDayNote() {
+    const date = selectedWorkoutDate();
+    if (!isRestDay(date)) {
+      markSelectedDateRestDay();
+      return;
+    }
+
+    state.restDays[date].note = els.restDayNoteInput.value.trim();
+    persist();
+    renderAll();
+    showToast(`Rest day note saved for ${formatLongDate(date)}.`);
   }
 
   function clearSelectedDateRestDay() {
@@ -1015,6 +1296,7 @@
       "date",
       "exercise",
       "muscle_group",
+      "specific_area",
       "type",
       "sets",
       "reps",
@@ -1031,7 +1313,7 @@
     const rows = historyDates().flatMap((date) => {
       const workout = state.workouts[date];
       if ((!workout || !workout.entries.length) && isRestDay(date)) {
-        return [[date, "Rest day", "", "rest", "", "", "", "", "", "No workout", "", "", "", ""]];
+        return [[date, "Rest day", "", "", "rest", "", "", "", "", "", restDayNote(date) || "No workout", "", "", "", ""]];
       }
       if (!workout) {
         return [];
@@ -1040,6 +1322,7 @@
         date,
         entry.exerciseName,
         entry.muscleGroup,
+        areaLabel(entry.muscleGroup, entry.area),
         entry.type,
         entry.sets,
         entry.reps,
@@ -1077,15 +1360,18 @@
   function resetLogForm(keepExercise) {
     const selected = els.exerciseSelect.value;
     const selectedGroup = els.targetMuscleSelect.value;
+    const selectedArea = els.targetAreaSelect.value;
     const selectedDate = els.workoutDateInput.value;
     els.todayForm.reset();
     if (keepExercise) {
       els.workoutDateInput.value = selectedDate;
       els.targetMuscleSelect.value = selectedGroup;
+      els.targetAreaSelect.value = selectedArea;
       renderExerciseSelects();
       els.exerciseSelect.value = selected;
     } else {
       els.workoutDateInput.value = todayISO();
+      renderExerciseSelects();
     }
     els.setsInput.value = "3";
     els.repsInput.value = "10";
@@ -1094,9 +1380,12 @@
   }
 
   function resetExerciseForm() {
+    const group = selectedLibraryGroup || "Chest";
+    const area = selectedLibraryArea || defaultAreaForGroup(group);
     els.exerciseForm.reset();
     els.customExerciseId.value = "";
-    els.customGroup.value = "Chest";
+    els.customGroup.value = group;
+    fillAreaSelect(els.customArea, group, area);
     els.customType.value = "strength";
     els.saveCustomExercise.textContent = "Add custom";
     els.cancelCustomEdit.classList.add("hidden");
@@ -1145,7 +1434,7 @@
         <div class="item-top">
           <div>
             <div class="item-title">${escapeHtml(entry.exerciseName)}</div>
-            <div class="item-meta">${escapeHtml(entry.muscleGroup)} | ${escapeHtml(titleCase(entry.type))}</div>
+            <div class="item-meta">${escapeHtml(entry.muscleGroup)} | ${escapeHtml(areaLabel(entry.muscleGroup, entry.area))} | ${escapeHtml(titleCase(entry.type))}</div>
           </div>
           <span class="pill">${formatNumber(entryTotalReps(entry))} reps</span>
         </div>
@@ -1192,6 +1481,10 @@
       if (groupDelta !== 0) {
         return groupDelta;
       }
+      const areaDelta = areaIndex(a.muscleGroup, a.area) - areaIndex(b.muscleGroup, b.area);
+      if (areaDelta !== 0) {
+        return areaDelta;
+      }
       if (a.custom !== b.custom) {
         return a.custom ? 1 : -1;
       }
@@ -1208,6 +1501,7 @@
   }
 
   function renderRestDayCard(date) {
+    const note = restDayNote(date);
     return `
       <article class="item-card rest-card">
         <div class="item-top">
@@ -1218,6 +1512,7 @@
           <span class="pill accent">No workout</span>
         </div>
         <p class="item-meta">Saved as a day off from training.</p>
+        ${note ? `<p class="entry-notes">${escapeHtml(note)}</p>` : ""}
       </article>
     `;
   }
@@ -1229,6 +1524,10 @@
 
   function isRestDay(date) {
     return Boolean(state.restDays[date]);
+  }
+
+  function restDayNote(date) {
+    return state.restDays[date] ? String(state.restDays[date].note || "") : "";
   }
 
   function clearRestDay(date) {
@@ -1471,6 +1770,52 @@
 
   function plural(count, singular, pluralText) {
     return `${formatNumber(count)} ${count === 1 ? singular : (pluralText || `${singular}s`)}`;
+  }
+
+  function areasForGroup(group) {
+    return MUSCLE_AREAS[group] || [];
+  }
+
+  function defaultAreaForGroup(group) {
+    const areas = areasForGroup(group);
+    return areas.length ? areas[0].id : "";
+  }
+
+  function normalizeExerciseArea(group, area) {
+    const areas = areasForGroup(group);
+    const found = areas.find((item) => item.id === area);
+    return found ? found.id : defaultAreaForGroup(group);
+  }
+
+  function areaMeta(group, area) {
+    const normalized = normalizeExerciseArea(group, area);
+    return areasForGroup(group).find((item) => item.id === normalized) || null;
+  }
+
+  function areaLabel(group, area) {
+    const meta = areaMeta(group, area);
+    return meta ? meta.name : "General";
+  }
+
+  function areaIndex(group, area) {
+    const index = areasForGroup(group).findIndex((item) => item.id === area);
+    return index === -1 ? 999 : index;
+  }
+
+  function areaOptionLabel(area) {
+    return `${area.name} (${area.anatomy})`;
+  }
+
+  function fillAreaSelect(select, group, selected) {
+    const options = areasForGroup(group).map((area) => ({
+      value: area.id,
+      label: areaOptionLabel(area)
+    }));
+    fillSelect(select, options);
+    const value = normalizeExerciseArea(group, selected);
+    select.value = options.some((option) => option.value === value)
+      ? value
+      : (options.length ? options[0].value : "");
   }
 
   function fillSelect(select, options) {

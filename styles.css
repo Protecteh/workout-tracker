@@ -315,6 +315,10 @@ h3 {
   margin-top: 0;
 }
 
+.rest-note-field textarea {
+  min-height: 84px;
+}
+
 .muscle-picker-panel {
   display: grid;
   gap: 1rem;
@@ -348,10 +352,46 @@ h3 {
   color: var(--accent);
 }
 
+.area-chip-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.area-chip {
+  display: grid;
+  min-height: 64px;
+  gap: 0.2rem;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text);
+  text-align: left;
+}
+
+.area-chip strong {
+  font-size: 0.95rem;
+}
+
+.area-chip span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.area-chip.active {
+  border-color: rgba(53, 208, 127, 0.5);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.area-chip.active span {
+  color: var(--text);
+}
+
 .form-row,
 .step-field,
 .quick-grid label,
 .two-col label,
+.three-col label,
 .filter-grid label {
   display: grid;
   gap: 0.35rem;
@@ -364,6 +404,7 @@ h3 {
 .step-field span,
 .quick-grid span,
 .two-col span,
+.three-col span,
 .filter-grid span {
   color: var(--muted);
 }
@@ -407,6 +448,7 @@ h3 {
 
 .quick-grid,
 .two-col,
+.three-col,
 .filter-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -415,6 +457,10 @@ h3 {
 
 .quick-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.three-col {
+  grid-template-columns: 1fr;
 }
 
 .optional-grid {
@@ -577,9 +623,26 @@ h3 {
   font-size: 0.95rem;
 }
 
+.area-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .library-grid {
   display: grid;
   gap: 0.6rem;
+}
+
+.add-exercise-button {
+  flex: 2 1 150px;
+}
+
+.empty-note {
+  padding: 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
 }
 
 .filter-grid {
@@ -746,10 +809,18 @@ h3 {
   }
 
   .flow-grid {
-    grid-template-columns: 1fr 1fr 1.4fr 0.7fr 0.7fr 0.9fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .three-col {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .optional-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .area-chip-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -763,6 +834,14 @@ h3 {
 }
 
 @media (min-width: 920px) {
+  .flow-grid {
+    grid-template-columns: 1fr 1fr 1.2fr 1.4fr 0.7fr 0.7fr 0.9fr;
+  }
+
+  .area-chip-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .library-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

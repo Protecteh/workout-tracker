@@ -1,10 +1,12 @@
-const CACHE_NAME = 'matlogg-v3';
+const CACHE_NAME = 'matlogg-v4';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
   './manifest.webmanifest',
+  './icon-192.png',
+  './icon-512.png',
   './icon.svg'
 ];
 

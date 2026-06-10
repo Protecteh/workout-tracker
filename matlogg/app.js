@@ -451,6 +451,11 @@ async function shareData() {
 
 async function installApp() {
   const hint = $('#installHint');
+  if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    if (hint) hint.textContent = 'Matlogg er allerede installert som app.';
+    return;
+  }
+
   if (deferredInstallPrompt) {
     deferredInstallPrompt.prompt();
     await deferredInstallPrompt.userChoice;
@@ -460,7 +465,7 @@ async function installApp() {
   }
 
   if (hint) {
-    hint.textContent = 'På Samsung S25: trykk menyen i Chrome eller Samsung Internet, og velg Installer app eller Legg til på startskjermen.';
+    hint.textContent = 'Hvis knappen ikke åpner installasjon: trykk ⋮ oppe til høyre i Chrome eller menyen i Samsung Internet, og velg Installer app eller Legg til på startskjermen.';
   }
 }
 

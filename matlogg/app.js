@@ -121,13 +121,13 @@ function getDay(key = selectedDate) {
   return normalizeDay(entries[key] || defaultDay(key));
 }
 
-function updateDay(mutator) {
+function updateDay(mutator, options = {}) {
   const entries = loadEntries();
   const day = getDay();
   mutator(day);
   entries[selectedDate] = day;
   saveEntries(entries);
-  render();
+  if (options.render !== false) render();
 }
 
 function render() {
@@ -188,8 +188,9 @@ function renderMeals(day) {
     textarea.value = meal.note;
     textarea.addEventListener('input', () => {
       updateDay((draft) => {
-        draft.meals.find((item) => item.time === meal.time).note = textarea.value;
-      });
+        const draftMeal = draft.meals.find((item) => item.time === meal.time);
+        if (draftMeal) draftMeal.note = textarea.value;
+      }, { render: false });
     });
 
     const wrap = node.querySelector('.symptom-wrap');
@@ -524,7 +525,7 @@ function bindEvents() {
     render();
   });
   $('#dayComment').addEventListener('input', (event) => {
-    updateDay((day) => day.comment = event.target.value);
+    updateDay((day) => day.comment = event.target.value, { render: false });
   });
   document.body.addEventListener('click', (event) => {
     const moodButton = event.target.closest('[data-mood]');

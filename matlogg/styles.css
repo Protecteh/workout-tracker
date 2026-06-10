@@ -263,11 +263,21 @@ body.dark .date-picker {
   border-radius: 15px;
 }
 
-.symptom-wrap {
+.symptom-wrap,
+.positive-wrap {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+}
+
+.chip-label {
+  margin: 13px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .chip {
@@ -390,6 +400,38 @@ body.dark .date-picker {
   display: grid;
   gap: 10px;
   margin-top: 12px;
+}
+
+.time-settings {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.time-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.time-row input {
+  min-height: 46px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  padding: 10px 12px;
+}
+
+.time-row button {
+  min-width: 46px;
+  min-height: 46px;
+  border: 0;
+  border-radius: 16px;
+  color: var(--ink);
+  background: var(--pink-soft);
+  font-weight: 950;
 }
 
 .bottom-nav {

@@ -20,10 +20,21 @@ const symptoms = [
   'Annet'
 ];
 
-const mealTimes = ['10:00', '16:00', '21:00'];
+const positiveStates = [
+  'Ikke kvalm',
+  'Ikke kastet opp',
+  'Passe mett',
+  'Ingen magesmerter',
+  'Ikke oppblåst',
+  'Energi ok',
+  'Annet positivt'
+];
+
+const defaultMealTimes = ['10:00', '16:00', '21:00'];
 let selectedDate = dateKey(new Date());
 let statsPeriod = 'week';
 const reminderTimers = [];
+let deferredInstallPrompt = null;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -43,7 +54,7 @@ function defaultDay(key) {
     date: key,
     mood: '',
     comment: '',
-    meals: mealTimes.map((time) => ({ time, note: '', symptoms: [] }))
+    meals: getMealTimes().map((time) => ({ time, note: '', symptoms: [], positives: [] }))
   };
 }
 
@@ -75,9 +86,39 @@ function saveSettings(settings) {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 }
 
+function getMealTimes() {
+  const settings = loadSettings();
+  const times = Array.isArray(settings.mealTimes) ? settings.mealTimes : defaultMealTimes;
+  const cleaned = [...new Set(times.filter((time) => /^\d{2}:\d{2}$/.test(time)))];
+  return cleaned.length ? cleaned.sort() : defaultMealTimes;
+}
+
+function saveMealTimes(times) {
+  const settings = loadSettings();
+  settings.mealTimes = [...new Set(times.filter((time) => /^\d{2}:\d{2}$/.test(time)))].sort();
+  if (!settings.mealTimes.length) settings.mealTimes = [...defaultMealTimes];
+  saveSettings(settings);
+}
+
+function normalizeDay(day) {
+  const existing = Array.isArray(day.meals) ? day.meals : [];
+  const meals = getMealTimes().map((time, index) => {
+    const exact = existing.find((meal) => meal.time === time);
+    const fallback = existing[index];
+    const source = exact || fallback || {};
+    return {
+      time,
+      note: source.note || '',
+      symptoms: Array.isArray(source.symptoms) ? source.symptoms : [],
+      positives: Array.isArray(source.positives) ? source.positives : []
+    };
+  });
+  return { ...day, meals };
+}
+
 function getDay(key = selectedDate) {
   const entries = loadEntries();
-  return entries[key] || defaultDay(key);
+  return normalizeDay(entries[key] || defaultDay(key));
 }
 
 function updateDay(mutator) {
@@ -93,6 +134,7 @@ function render() {
   renderHome();
   renderHistory();
   renderStats();
+  renderSettings();
 }
 
 function renderHome() {
@@ -156,8 +198,31 @@ function renderMeals(day) {
         aria-pressed="${meal.symptoms.includes(symptom)}"
       >${symptom}</button>
     `).join('');
+
+    const positiveWrap = node.querySelector('.positive-wrap');
+    positiveWrap.innerHTML = positiveStates.map((state) => `
+      <button
+        type="button"
+        class="chip ${meal.positives.includes(state) ? 'active' : ''}"
+        data-time="${meal.time}"
+        data-positive="${state}"
+        aria-pressed="${meal.positives.includes(state)}"
+      >${state}</button>
+    `).join('');
     mealList.appendChild(node);
   });
+}
+
+function renderSettings() {
+  const timeSettings = $('#timeSettings');
+  if (!timeSettings) return;
+  const times = getMealTimes();
+  timeSettings.innerHTML = times.map((time, index) => `
+    <div class="time-row">
+      <input type="time" value="${time}" data-time-index="${index}" aria-label="Tidspunkt ${index + 1}" />
+      <button type="button" data-remove-time="${index}" aria-label="Fjern tidspunkt">×</button>
+    </div>
+  `).join('');
 }
 
 function renderHistory() {
@@ -315,7 +380,7 @@ function setupReminders(enabled) {
   if (Notification.permission === 'default') Notification.requestPermission();
   if (Notification.permission !== 'granted') return;
 
-  mealTimes.forEach((time) => {
+  getMealTimes().forEach((time) => {
     const schedule = () => {
       const [hour, minute] = time.split(':').map(Number);
       const now = new Date();
@@ -366,7 +431,8 @@ function exportJpg() {
     ctx.fillText(meal.time, 112, y);
     ctx.font = '700 30px system-ui';
     wrapCanvasText(ctx, meal.note || '-', 112, y + 50, 940, 36);
-    ctx.fillText(`Symptomer: ${meal.symptoms.join(', ') || '-'}`, 112, y + 136);
+    ctx.fillText(`Symptomer: ${meal.symptoms.join(', ') || '-'}`, 112, y + 124);
+    ctx.fillText(`Bra tegn: ${meal.positives.join(', ') || '-'}`, 112, y + 164);
     y += 250;
   });
   const link = document.createElement('a');
@@ -382,12 +448,27 @@ async function shareData() {
     `Matlogg ${day.date}`,
     `Humør: ${mood?.label || '-'}`,
     `Kommentar: ${day.comment || '-'}`,
-    ...day.meals.map((meal) => `${meal.time}: ${meal.note || '-'} | Symptomer: ${meal.symptoms.join(', ') || '-'}`)
+    ...day.meals.map((meal) => `${meal.time}: ${meal.note || '-'} | Symptomer: ${meal.symptoms.join(', ') || '-'} | Bra tegn: ${meal.positives.join(', ') || '-'}`)
   ].join('\n');
   if (navigator.share) {
     await navigator.share({ title: 'Matlogg', text });
   } else {
     location.href = `mailto:?subject=Matlogg ${day.date}&body=${encodeURIComponent(text)}`;
+  }
+}
+
+async function installApp() {
+  const hint = $('#installHint');
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    if (hint) hint.textContent = 'Hvis installasjonen ikke startet: åpne menyen i Chrome/Samsung Internet og velg Legg til på startskjermen.';
+    return;
+  }
+
+  if (hint) {
+    hint.textContent = 'På Samsung S25: trykk menyen i Chrome eller Samsung Internet, og velg Installer app eller Legg til på startskjermen.';
   }
 }
 
@@ -458,10 +539,23 @@ function bindEvents() {
     if (chip) {
       updateDay((day) => {
         const meal = day.meals.find((item) => item.time === chip.dataset.time);
+        if (!meal) return;
         const symptom = chip.dataset.symptom;
         meal.symptoms = meal.symptoms.includes(symptom)
           ? meal.symptoms.filter((item) => item !== symptom)
           : [...meal.symptoms, symptom];
+      });
+    }
+
+    const positive = event.target.closest('[data-positive]');
+    if (positive) {
+      updateDay((day) => {
+        const meal = day.meals.find((item) => item.time === positive.dataset.time);
+        if (!meal) return;
+        const state = positive.dataset.positive;
+        meal.positives = meal.positives.includes(state)
+          ? meal.positives.filter((item) => item !== state)
+          : [...meal.positives, state];
       });
     }
 
@@ -474,6 +568,26 @@ function bindEvents() {
       setView('homeView');
       render();
     }
+
+    const removeTime = event.target.closest('[data-remove-time]');
+    if (removeTime) {
+      const times = getMealTimes();
+      if (times.length <= 1) return;
+      times.splice(Number(removeTime.dataset.removeTime), 1);
+      saveMealTimes(times);
+      render();
+      setupReminders(loadSettings().reminders);
+    }
+  });
+
+  document.body.addEventListener('change', (event) => {
+    const timeInput = event.target.closest('[data-time-index]');
+    if (!timeInput) return;
+    const times = getMealTimes();
+    times[Number(timeInput.dataset.timeIndex)] = timeInput.value;
+    saveMealTimes(times);
+    render();
+    setupReminders(loadSettings().reminders);
   });
 
   $$('.segment [data-period]').forEach((button) => {
@@ -487,6 +601,16 @@ function bindEvents() {
   $('#exportPdf').addEventListener('click', exportPdf);
   $('#exportJpg').addEventListener('click', exportJpg);
   $('#shareData').addEventListener('click', shareData);
+  $('#installApp').addEventListener('click', installApp);
+  $('#addTime').addEventListener('click', () => {
+    const times = getMealTimes();
+    const suggestion = ['08:00', '12:00', '14:00', '18:00', '20:00', '22:00']
+      .find((time) => !times.includes(time)) || '12:00';
+    times.push(suggestion);
+    saveMealTimes(times);
+    render();
+    setupReminders(loadSettings().reminders);
+  });
 
   $('#darkToggle').addEventListener('change', (event) => {
     const settings = loadSettings();
@@ -517,5 +641,18 @@ function init() {
     navigator.serviceWorker.register('./sw.js');
   }
 }
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const hint = $('#installHint');
+  if (hint) hint.textContent = 'Klar til installasjon: trykk Installer på Samsung / Android.';
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  const hint = $('#installHint');
+  if (hint) hint.textContent = 'Matlogg er installert på enheten.';
+});
 
 init();

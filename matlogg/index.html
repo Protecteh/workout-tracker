@@ -116,10 +116,27 @@
           <article class="planner-card compact">
             <h3>Påminnelser</h3>
             <label class="toggle-row">
-              <span>Varsel kl. 10:00, 16:00 og 21:00</span>
+              <span>Varsel ved valgte tidspunkter</span>
               <input id="remindersToggle" type="checkbox" />
             </label>
             <p class="hint">Nettleseren spør om tillatelse første gang. Varsler fungerer når appen er installert eller åpen i nettleseren.</p>
+          </article>
+
+          <article class="planner-card compact">
+            <h3>Last ned appen</h3>
+            <div class="button-stack">
+              <button id="installApp" class="primary-button" type="button">Installer på Samsung / Android</button>
+            </div>
+            <p id="installHint" class="hint">På Samsung S25: åpne siden i Chrome eller Samsung Internet, trykk Installer app eller menyen, og velg Legg til på startskjermen.</p>
+          </article>
+
+          <article class="planner-card compact">
+            <h3>Tidspunkter</h3>
+            <div id="timeSettings" class="time-settings"></div>
+            <div class="button-stack">
+              <button id="addTime" class="soft-button" type="button">Legg til tidspunkt</button>
+            </div>
+            <p class="hint">Endrer kortene på forsiden og tidene som brukes til påminnelser.</p>
           </article>
 
           <article class="planner-card compact">
@@ -164,7 +181,10 @@
           <span class="visually-hidden">Matregistrering</span>
           <textarea rows="3" placeholder="Hva spiste/drakk du? Mengde, situasjon eller tanker..."></textarea>
         </label>
+        <p class="chip-label">Symptomer</p>
         <div class="symptom-wrap" aria-label="Symptomer"></div>
+        <p class="chip-label">Motsatt / bra tegn</p>
+        <div class="positive-wrap" aria-label="Motsatt av symptomer"></div>
       </article>
     </template>
 
